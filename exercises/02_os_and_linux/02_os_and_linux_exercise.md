@@ -11,6 +11,41 @@
 
 ### Exercise 2 - Bash Script - Install Java
 
+```bash
+#!/bin/bash
+
+# Update package lists<br>
+sudo apt update
+
+sudo apt-cache search openjdk | awk '{print $1}' | grep '^openjdk-[0-9]\+-jdk$' | sort -V | tail -n 1
+```
+
+| Command               | Info                                                                                                                                                                                                       |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| apt-cache search      | Returns the search as plain text (better to parse)                                                                                                                                                         |
+| awk '{print $1}'      | *awk* is used for processing and analyzing text files. It reads input line by line, splits each line into fields (columns), and lets you perform actions on those fields. *$1* refers to the first column. |
+| ^openjdk-[0-9]\+-jdk$ | *^* begin of the regex, *[0-9]\+* one or more digits from 0 to 9, *$* end of regex                                                                                                                         |
+| sort -V               | Version-aware sort                                                                                                                                                                                         |
+| tail -n 1             | Returns the last line                                                                                                                                                                                      |
+
+```bash
+# Check if a package was found
+if [ -z "$LATEST_JDK" ]; then
+    echo "No OpenJDK JDK package found in the repositories."
+    exit 1
+fi
+
+echo "Installing $LATEST_JDK..."
+
+# Install the latest JDK
+sudo apt install -y "$LATEST_JDK"
+
+# Display the installed Java version
+echo
+echo "Java installation complete."
+java -version
+javac -version
+```
 
 ### Exercise 3 - Bash Script - User Processes
 
