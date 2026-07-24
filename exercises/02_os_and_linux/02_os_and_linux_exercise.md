@@ -17,7 +17,8 @@
 # Update package lists<br>
 sudo apt update
 
-sudo apt-cache search openjdk | awk '{print $1}' | grep '^openjdk-[0-9]\+-jdk$' | sort -V | tail -n 1
+# Find the latest available OpenJDK JDK package
+LATEST_JDK=$(apt-cache search openjdk | awk '{print $1}' | grep '^openjdk-[0-9]\+-jdk$' | sort -V | tail -n 1)
 ```
 
 | Command               | Info                                                                                                                                                                                                       |
@@ -34,18 +35,37 @@ if [ -z "$LATEST_JDK" ]; then
     echo "No OpenJDK JDK package found in the repositories."
     exit 1
 fi
+```
+| Command              | Info                                        |
+|----------------------|---------------------------------------------|
+| [ -z "$LATEST_JDK" ] | Checks if the length of the string is zero. |
 
+
+```bash
 echo "Installing $LATEST_JDK..."
 
 # Install the latest JDK
 sudo apt install -y "$LATEST_JDK"
+```
 
+| Command        | Info                                  |
+|----------------|---------------------------------------|
+| apt install -y | Install package and answer YES (*-y*) |
+
+
+```bash
 # Display the installed Java version
 echo
 echo "Java installation complete."
 java -version
 javac -version
 ```
+
+| Command        | Info                       |
+|----------------|----------------------------|
+| java -version  | Java runtime (JVM) version |
+| javac -version | Java compiler version      |
+
 
 ### Exercise 3 - Bash Script - User Processes
 
