@@ -256,6 +256,30 @@ echo "Logs: $(pwd)/server.log"
 
 ### Exercise 7 - Bash Script - Node App Check Status
 
+```bash
+echo "Check app is running"
+APP_PID=$!
+sleep 5
+
+if ps -p "$APP_PID" > /dev/null; then
+    echo "Application started successfully."
+    echo "Process information:"
+    ps -fp "$APP_PID"
+
+    PORT=$(ss -ltnp 2>/dev/null | grep "$APP_PID" | awk '{print $4}' | awk -F: '{print $NF}' | head -1)
+
+    if [ -n "$PORT" ]; then
+        echo "Application is listening on port: $PORT"
+    else
+        echo "Application is running, but no listening port was found."
+    fi
+else
+    echo "Application failed to start."
+    echo "Last 20 lines of log:"
+    tail -20 server.log
+    exit 1
+fi
+```
 
 ### Exercise 8 - Bash Script - Node App with Log Directory
 
