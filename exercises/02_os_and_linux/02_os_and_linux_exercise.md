@@ -108,12 +108,70 @@ fi
 
 ### Exercise 3 - Bash Script - User Processes
 
+```bash
+#!/bin/bash
+
+echo "Get all running processes for user '$USER'"
+ps aux | grep $USER
+```
+
+| Command    | Info                        |
+|------------|-----------------------------|
+| ps aux     | Print all running processes |
+| grep $USER | *grep* for current user     |
 
 ### Exercise 4 - Bash Script - User Processes Sorted
 
+```bash
+#!/bin/bash
+
+read -p "Sort list by memory (m) usage or CPU (c) consumption: " sort_option
+
+echo "Get all running processes of user '$USER'"
+
+if [ "$sort_option" == m ];
+then
+  echo "Process list sorted by memory usage."
+  ps aux --sort=-%mem | grep $USER
+elif [ "$sort_option" == c ];
+then
+  echo "Process list sorted by CPU consumption."
+  ps aux --sort=-%cpu | grep $USER
+else
+  echo "Invalid input. Must be 'm' or 'c'."
+fi
+```
+
+| Command      | Info                                    |
+|--------------|-----------------------------------------|
+| --sort=-%mem | Sort by *%mem* in desending ("-") order |
 
 ### Exercise 5 - Bash Script - Number of User Processes Sorted
 
+```bash
+#!/bin/bash
+
+read -p "Sort list by memory (m) usage or CPU (c) consumption: " sort_option
+read -p "Number of processes to print: " no_of_processes
+
+echo "Get all running processes of user '$USER'"
+
+if [ "$sort_option" == m ];
+then
+  echo "Process list sorted by memory usage."
+  ps aux --sort=-%mem | grep $USER | head -n "$no_of_processes"
+elif [ "$sort_option" == c ];
+then
+  echo "Process list sorted by CPU consumption."
+  ps aux --sort=-%cpu | grep $USER | head -n "$no_of_processes"
+else
+  echo "Invalid input. Must be 'm' or 'c'."
+fi
+```
+
+| Command                    | Info                                                                |
+|----------------------------|---------------------------------------------------------------------|
+| head -n "$no_of_processes" | Print the given number of processes starting at the top of the list |
 
 ### Exercise 6 - Bash Script - Start Node App
 
