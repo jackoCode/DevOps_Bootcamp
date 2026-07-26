@@ -66,6 +66,45 @@ javac -version
 | java -version  | Java runtime (JVM) version |
 | javac -version | Java compiler version      |
 
+```bash
+# Check whether Java is installed
+if ! command -v java >/dev/null 2>&1;
+then
+  echo "Java is NOT installed."
+  exit 1
+else
+  echo "Java is installed."
+fi
+```
+
+| Command         | Info                                                        |
+|-----------------|-------------------------------------------------------------|
+| !               | NOT                                                         |
+| command -v java | Calls command "java". *-v* for verbose.                     |
+| >/dev/null      | Discard the output                                          |
+| 2>&1            | Send standard output and also standard error to */dev/null* |
+
+
+```bash
+# Extract major version number
+VERSION=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
+MAJOR=$(echo "$VERSION" | awk -F. '{if ($1 == "1") print $2; else print $1}')
+
+# Check if Java version is lower than 11
+if [ "$MAJOR" -lt 11 ]; then
+  echo "An older Java version is installed (Java $MAJOR)."
+  echo "Java 11 or higher is NOT available."
+  echo "Installation was NOT successful."
+else
+  echo "No older Java version detected."
+  echo "Java 11 or higher is installed (Java $MAJOR)."
+  echo "Installation was successful."
+fi
+```
+
+| Command | Info                  |
+|---------|-----------------------|
+| awk -F. | *-F.* separat by "."  |
 
 ### Exercise 3 - Bash Script - User Processes
 
