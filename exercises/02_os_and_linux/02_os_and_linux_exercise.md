@@ -175,6 +175,84 @@ fi
 
 ### Exercise 6 - Bash Script - Start Node App
 
+```bash
+#!/bin/bash
+
+set -euo pipefail
+```
+
+| Command           | Info                                              |
+|-------------------|---------------------------------------------------|
+| set -euo pipefail | *-e*: Exit on command failure                     |
+|                   | *-u*: Exit on unset variables                     |
+|                   | *-o pipefail*: Pipeline fail if any command fails |
+
+```bash
+ARTIFACT_URL="https://node-envvars-artifact.s3.eu-west-2.amazonaws.com/bootcamp-node-envvars-project-1.0.0.tgz"
+ARTIFACT_NAME="bootcamp-node-envvars-project-1.0.0.tgz"
+
+echo "Installing Node.js and npm"
+sudo apt-get update
+sudo apt-get install -y nodejs npm
+
+echo "Installed versions:"
+echo "Node.js: $(node -v)"
+echo "npm: $(npm -v)"
+
+echo "Downloading artifact"
+if command -v curl >/dev/null 2>&1; then
+    curl -L -o "$ARTIFACT_NAME" "$ARTIFACT_URL"
+elif command -v wget >/dev/null 2>&1; then
+    wget -O "$ARTIFACT_NAME" "$ARTIFACT_URL"
+else
+    echo "Neither curl nor wget are installed."
+    exit 1
+fi
+```
+
+| Command    | Info                                               |
+|------------|----------------------------------------------------|
+| curl -L -o | *-L*: Follow redirects                             |
+|            | *-o*: Save downloaded file with the specified name |
+| wget -O    | *-O*: Save downloaded file with the specified name |
+|            | NOTE: *wget* will follow redirectes by default     |
+
+```bash
+echo "Unzip artifact"
+tar -xzf "$ARTIFACT_NAME"
+APP_DIR=$(tar -tzf "$ARTIFACT_NAME" | head -1 | cut -d/ -f1)
+
+```
+
+| Command                | Info                                           |
+|------------------------|------------------------------------------------|
+| tar -xzf               | *-x*: Extract                                  |
+|                        | *-z*: gzip-compressed                          |
+|                        | *-f*: Specified file                           |
+| tar -tzf               | *-t*: List the archive content                 |
+| head -1 \| cut -d/ -f1 | *head -1*: Beginning of the input              |
+|                        | *cut -d/ -f1*: Split at "/" and get first item |
+
+```bash
+
+echo "Setting environment variables"
+export APP_ENV="dev"
+export DB_USER="myuser"
+export DB_PWD="mysecret"
+
+echo "Changing to app directory"
+cd "$APP_DIR"
+
+echo "Installing app dependencies"
+npm install
+
+echo "Starting Node.js app (running in the background)"
+nohup node server.js > server.log 2>&1 &
+
+echo "Application started successfully."
+echo "PID: $!"
+echo "Logs: $(pwd)/server.log"
+```
 
 ### Exercise 7 - Bash Script - Node App Check Status
 
