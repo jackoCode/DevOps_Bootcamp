@@ -283,5 +283,45 @@ fi
 
 ### Exercise 8 - Bash Script - Node App with Log Directory
 
+```bash
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <log_directory>"
+    exit 1
+fi
+
+LOG_DIR="$1"
+
+if [ ! -d "$LOG_DIR" ]; then
+    echo "Creating log directory: $LOG_DIR"
+    mkdir -p "$LOG_DIR"
+fi
+
+LOG_DIR=$(cd "$LOG_DIR" && pwd)
+```
+
+| Command         | Info                   |
+|-----------------|------------------------|
+| $# -ne 1        | *$#*: Number of params |
+|                 | *-ne*: Not equal       |
+| ! -d "$LOG_DIR" | *-d*: Is directory     |
+
 
 ### Exercise 9 - Bash Script - Node App with Service user
+
+```bash
+sudo -u "$APP_USER" bash <<EOF
+
+cd "$(pwd)/$APP_DIR"
+
+export APP_ENV="$APP_ENV"
+export DB_USER="$DB_USER"
+export DB_PWD="$DB_PWD"
+export LOG_DIR="$LOG_DIR"
+
+npm install
+EOF
+```
+
+| Comand        | Info                          |
+|---------------|-------------------------------|
+| <<EOF ... EOF | Used to write multiple lines. |
