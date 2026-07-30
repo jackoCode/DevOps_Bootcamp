@@ -36,14 +36,83 @@ git add .
 git commit -m "..."
 git push
 ```
+Add .gitignore file
+```
+touch .gitignore
+vim .gitignore
+git add .
+git commit -m "added .gitignore file"
+git push
+```
 
 ## Exercise 3 - Feature branch
 
+Create new feature branch and checkout
+```
+git checkout -b feature/upgrade_and_add
+```
+
+Check changes
+```
+git diff
+```
+
+Commit changes
+```
+git add .
+git commit -m "Updated logstash-logback-encoder version to 7.3 and added image to index.html"
+```
+
+Push
+```
+git push --set-upstream origin featue/upgrade_and_add
+git push
+```
+
 ## Exercise 4 - Bugfix branch
+
+Create new bugfix branch and checkout
+```
+git checkout -b bugfix/spelling_error
+```
+
+Correct the typo
+```
+vim Application.java
+```
+
+Check changes
+```
+git diff
+```
+
+Commit changes
+```
+git add .
+git commit -m "Fixed spelling error 'starte' -> 'started'"
+```
+
+Push
+```
+git push --set-upstream origin bugfix/spelling_error
+git push
+```
+
 
 ## Exercise 5 - Merge request
 
+![merge_request_feature_branch.png](../../media/pics/merge_request_feature_branch.png)
+
 ## Exercise 6 - Fix merge conflict
+
+*Using PyCharm:*
+1. Checkout bugfix branch
+2. Update version to 7.2
+3. Commit and push changes to remote
+4. Update local main
+5. Rebase bugfix branch
+6. Check merge conflict and choose the correct change
+7. Update and push bugfix branch
 
 ## Exercise 7 - Revert commit
 
