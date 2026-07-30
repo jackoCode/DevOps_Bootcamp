@@ -105,14 +105,6 @@ git push
 
 ## Exercise 6 - Fix merge conflict
 
-*Using PyCharm:*
-1. Checkout bugfix branch
-2. Update version to 7.2
-3. Commit and push changes to remote
-4. Update local main
-5. Rebase bugfix branch
-6. Check merge conflict and choose the correct change
-7. Update and push bugfix branch
 
 ## Exercise 7 - Revert commit
 
