@@ -105,11 +105,67 @@ git push
 
 ## Exercise 6 - Fix merge conflict
 
+Update logstash-logback-encoder version
+```
+vim build.gradle
+```
+
+Commit and push to remote
+```
+git add .
+git commit -m "Updated logstash-logback-encoder version from 5.2 to 7.2"
+git push
+```
+
+Resolve merge request
+```
+git fetch origin
+git merge origin/main
+-> MERGE CONFLICT <-
+vim build.gradle
+git add .
+git commit -m "resolved merge conflict"
+git push
+```
 
 ## Exercise 7 - Revert commit
 
+Correct spelling error und update image URL (both changes are done in separate commits)
+```
+vim index.html
+```
+
+Commit changes and push to remote
+```
+git add .
+git commit -m "..."
+git push
+```
+
+Revert the last commit
+```
+git reset --hard <commit hash>
+git push --force
+```
+
 ## Exercise 8 - Reset commit
+
+After change and commit
+```
+git reset --hard HEAD~1
+```
 
 ## Exercise 9 - Merge
 
+```
+git checkout master
+git pull origin master
+git merge bugfix-branch
+git push origin master
+```
+
 ## Exercise 10 - Delete branch
+
+```
+git branch -d <branch name>
+```
