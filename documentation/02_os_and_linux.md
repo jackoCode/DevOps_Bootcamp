@@ -11,7 +11,7 @@
     - In VirtualBox go to Settings -> Storage 
     - Choose the drive from the devices and then "Choose a Disk File"
 
-    "![VirtualBox_storage_tree_choose_disk_file.png](media/pics/VirtualBox_storage_tree_choose_disk_file.png)
+    ![VirtualBox_storage_tree_choose_disk_file.png](../media/pics/docu/02_os_and_linux/VirtualBox_storage_tree_choose_disk_file.png)
 
     - After Linux was installed remove disk from virtual drive
 3. Shared folder/clipboard
@@ -54,7 +54,7 @@ jacko@ubuntuVM:~$
 
 ### CLI commands
 
-![Linux-Commands_Cheat-Sheet.png](media/pics/Linux-Commands_Cheat-Sheet.png)
+![Linux-Commands_Cheat-Sheet.png](../media/pics/docu/02_os_and_linux/Linux-Commands_Cheat-Sheet.png)
 
 ## Package manager
 
@@ -81,7 +81,7 @@ APT is the more user-friendly variant.
 
 ## VIM
 
-![vim_cheat_sheet.png](media/pics/vim_cheat_sheet.png)
+![vim_cheat_sheet.png](../media/pics/docu/02_os_and_linux/vim_cheat_sheet.png)
 
 ## Users and Permissions
 

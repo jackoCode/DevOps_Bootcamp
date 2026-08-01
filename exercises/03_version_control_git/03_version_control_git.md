@@ -101,7 +101,7 @@ git push
 
 ## Exercise 5 - Merge request
 
-![merge_request_feature_branch_gitlab.png](../../media/pics/merge_request_feature_branch_gitlab.png)
+![merge_request_feature_branch_gitlab.png](../../media/pics/exercises/03_version_control_git/merge_request_feature_branch_gitlab.png)
 
 ## Exercise 6 - Fix merge conflict
 

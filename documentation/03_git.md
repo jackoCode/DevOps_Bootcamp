@@ -136,4 +136,4 @@ Do not do this to *main* branch or to repositories where other people also worki
 
 ## Git cheat sheet
 
-[atlassian-git-cheatsheet.pdf](media/atlassian-git-cheatsheet.pdf)
+[git_cheat_sheet.md](../media/documents/03_git/git_cheat_sheet.md)

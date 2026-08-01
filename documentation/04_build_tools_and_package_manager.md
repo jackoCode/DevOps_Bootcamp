@@ -60,8 +60,9 @@ Run Maven with command *mvn package* in the project folder.
 - Install Gradle with command *brew install gradle*
 - **Intellij**<br>*Settings* -> *Build, Execution, Development* -> *Gradle* -> set *Distribution to *local Installation* -> add *Location* to the location shown in the terminal after installation
 
-![](media/pics/intellij_settings_build_tools.png)
-![img.png](media/pics/intellij_settings_gradle.png)
+![intellij_settings_build_tools.png](../media/pics/docu/04_build_tools_and_package_manager/intellij_settings_build_tools.png)
+
+![intellij_settings_gradle.png](../media/pics/docu/04_build_tools_and_package_manager/intellij_settings_gradle.png)
 
 #### Node.js
 
@@ -78,7 +79,7 @@ Run a Node.js application with command *npm start*<br>
 |--------------|---------------------------------------------------------------------|
 | gradle build | Create a *build* folder containing the *JAR* file (and other files) |
 
-![img.png](media/pics/gradle_build_folder.png)
+![gradle_build_folder.png](../media/pics/docu/04_build_tools_and_package_manager/gradle_build_folder.png)
 
 ### Maven
 
@@ -86,16 +87,16 @@ Run a Node.js application with command *npm start*<br>
 |-------------|----------------------------------------------------------------------|
 | mvn install | Create a *target* folder containing the *JAR* file (and other files) |
 
-![img.png](media/pics/maven_target_folder.png)
+![maven_target_folder.png](../media/pics/docu/04_build_tools_and_package_manager/maven_target_folder.png)
 
 ### Build tools for development
 
 Dependencies for the project are managed in dependencies files.
 
-| Build tool | Dependencies file | Example                                                    |
-|------------|-------------------|------------------------------------------------------------|
-| Maven      | pom.xml           | ![img.png](media/pics/pom_xml_dependency_example.png)      |
-| Gradle     | build.gradle      | ![img.png](media/pics/build_gradle_dependency_example.png) |
+| Build tool | Dependencies file | Example                                                                                                                           |
+|------------|-------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| Maven      | pom.xml           | ![pom_xml_dependency_example.png](../media/pics/docu/04_build_tools_and_package_manager/pom_xml_dependency_example.png)           |
+| Gradle     | build.gradle      | ![build_gradle_dependency_example.png](../media/pics/docu/04_build_tools_and_package_manager/build_gradle_dependency_example.png) |
 
 - Dependencies are available in repositories for each Maven and Gradle
 - Run a Java application with the command *java -jar <jar-file-name>*
@@ -118,7 +119,8 @@ but not the dependencies. Therefore, dependencies need to be installed separatel
 
 Frontend and backend artifacts can have a common artifact file (both JS code) or packed separately
 (Example: frontend and backend code can have its own folders in the project)
-![img.png](media/pics/js_example_app_code_structure.png)
+
+![js_example_app_code_structure.png](../media/pics/docu/04_build_tools_and_package_manager/js_example_app_code_structure.png)
 
 **NOTE**<br>
 Frontend/React code needs to be transpiled to make sure it will work in all browsers.
