@@ -51,3 +51,27 @@ Create a Droplet with 8GB RAM.
 |-----------------|----------------------------------------------------------------------------------------------------------|
 | nexus-3.94.1-06 | Contains runtime and application of Nexus.                                                               |
 | sonatype-work   | Contains own config and data. Update will not replace this folder. This folder is also used for backups. |
+
+
+### Nexus UI
+
+Nexus will create a new user "admin" with a default password for the first login.
+
+### Nexus repository types
+
+| Type       | Info                                                                                                                           |
+|------------|--------------------------------------------------------------------------------------------------------------------------------|
+| **proxy**  | - Linked to a remote repository (e.g., maven-central)<br/> - Act as a cache<br/> - Single endpoint for everyone                |
+| **hosted** | - Primary storage<br/> - Integrated version policies<br/> - Internal releases and not external available thirdparty components |
+| **group**  | - One endpoint for multiple repositories and/or groups                                                                         |
+
+### Publish artifact
+
+- Create Nexus user
+Security -> Users
+- Create Nexus role
+Security -> Roles (e.g., nx-repository-view-maven2-maven-snapshots-*)
+
+#### Gradle
+
+#### Maven
