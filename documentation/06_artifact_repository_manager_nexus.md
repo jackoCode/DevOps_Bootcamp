@@ -68,10 +68,73 @@ Nexus will create a new user "admin" with a default password for the first login
 ### Publish artifact
 
 - Create Nexus user
-Security -> Users
+![nexus_ui_security_users.png](../media/pics/docu/06_artifact_repository_manager/nexus_ui_security_users.png)
+![nexus_ui_create_user.png](../media/pics/docu/06_artifact_repository_manager/nexus_ui_create_user.png)
+
 - Create Nexus role
-Security -> Roles (e.g., nx-repository-view-maven2-maven-snapshots-*)
+![nexus_ui_security_roles.png](../media/pics/docu/06_artifact_repository_manager/nexus_ui_security_roles.png)
+![nexus_ui_create_role.png](../media/pics/docu/06_artifact_repository_manager/nexus_ui_create_role.png)
+![nexus_ui_create_role_privileges.png](../media/pics/docu/06_artifact_repository_manager/nexus_ui_create_role_privileges.png)
 
 #### Gradle
+
+- build.gradle<br>
+Add *plugin* and *publishing* section. The line *allowInsecureProtocol = true* is
+needed because we use *http*.
+
+```java
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        create("maven", MavenPublication){
+            artifact("build/libs/my-app-$version" + ".jar"){
+                extension 'jar'
+            }
+        }
+    }
+
+    repositories {
+        maven{
+            name 'nexus'
+            url "http://165.232.120.17:8081/repository/maven-snapshots/"
+            allowInsecureProtocol = true
+            credentials{
+                username project.repoUser
+                password project.repoPassword
+            }
+        }
+    }
+}
+```
+- gradle.properties<br>
+Create a properties file for the credentials needed to upload to Nexus. In this example
+*username* and *password* are stored in the file and can be used with *project.repoUser*
+and *project.repoPassword* (see above).
+
+```java
+repoUser = jacko
+repoPassword = jacko!user
+```
+- settings.gradle<br>
+The application name can be defined in the *settings.gradle* file.
+
+```java
+rootProject.name = 'my-app'
+```
+- Build Gradle artifact
+
+```bash
+build gradle 
+```
+![build_gradle_artifact.png](../media/pics/docu/06_artifact_repository_manager/build_gradle_artifact.png)
+
+- Publish Gradle artifact
+
+```bash
+gradle publish
+```
+Note: The *publish* command is not available for Gradle by default. It was added
+with the plugin *apply plugin: 'maven-publish'* in the *build.gradle* file.
 
 #### Maven
