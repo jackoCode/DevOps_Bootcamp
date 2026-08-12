@@ -138,3 +138,54 @@ Note: The *publish* command is not available for Gradle by default. It was added
 with the plugin *apply plugin: 'maven-publish'* in the *build.gradle* file.
 
 #### Maven
+
+*pom.xml*
+
+- Add *plugin*
+
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-deploy-plugin</artifactId>
+    <version>3.1.4</version>
+</plugin>
+```
+
+- Add *distributionManagement* to configure the Nexus repository
+
+```xml
+<distributionManagement>
+    <snapshotRepository>
+        <id>nexus-snapshots</id>
+        <url>http://164.92.135.47:8081/repository/maven-snapshots</url>
+    </snapshotRepository>
+</distributionManagement>
+```
+
+*.m2* folder
+
+- Create new file *settings.xml* for Maven global credentials and add
+
+```xml
+<settings>
+    <servers>
+        <server>
+            <id>nexus-snapshots</id>
+            <username>jacko</username>
+            <password>jacko!user</password>
+        </server>
+    </servers>
+</settings>
+```
+
+- Create Maven artifact
+
+```
+mvn package
+```
+
+- Publish Maven artifact
+
+```
+mvn deploy
+```
