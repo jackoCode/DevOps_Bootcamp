@@ -1,6 +1,90 @@
 # Containers with Docker
 
-Download and run Docker container
+A container is the package of an application with all necessary dependencies
+and configurations.
+
+## Container repository
+
+**Private**
+Hosted on own servers
+
+**Public**
+Publicly hosted (e.g., Docker Hub)
+
+## Container vs. Image
+
+A container has layers of images.
+
+```postgres:15.3```  Layer - application image<br>
+```...```<br>
+```...```<br>
+```...```<br>
+```alpine:3.17```  Layer - Linux base image
+
+## Docker image (*not running*)
+
+- The image is the actual package
+- Artifact, that can moved around
+
+## Docker container (*running*)
+
+- The container actually starts the application
+- The container environment is created
+
+## Docker architecture and components
+
+**Docker Engine**
+
+- Server
+- API
+- CLI
+
+**Docker Server**
+
+- Container runtime
+- Volumes
+- Network
+- Build images
+
+## Docker vs. VM
+
+- Docker virtualize the OS application layer
+- Docker images are smaller
+- Docker containers take seconds to start
+
+**Problem**
+
+Linux based container can not run on Windows or macOS kernel directly. Docker Desktop
+allows to run Linux based containers on Windows or macOS (uses a hypervisor layer).
+
+## Container port vs. Host port
+
+Multiple container can run on the host machine. Therefore, the container port needs
+to be bind to a host port (containers can have the same port).
+
+**Example**
+
+```docker run -p 6000:6973```
+
+This command will bind the host port *6000* to the container port *6973*.
+
+## Docker commands
+
+| Command                                        | Info                                                             |
+|------------------------------------------------|------------------------------------------------------------------|
+| docker image                                   | Shows all images on the local machine                            |
+| docker ps                                      | Shows all running containers                                     |
+| docker ps -a                                   | Shows all running and not running containers                     |
+| docker run <*image*>                           | Run a new container from an image                                |
+| docker run -d <*image*>                        | Run the container in detached mode                               |
+| docker run -p <*host port*>:<*container port*> | Bind the container port to a host port                           |
+| docker run --name <*container name*>           | Run the container with the specified name                        |
+| docker stop <*container ID/name*>              | Stop the container                                               |
+| docker start <*container ID/name*>             | Start a container                                                |
+| docker logs <*container ID/name*>              | Shows the logs of the container                                  |
+| docker exec -it <*container ID/name*>          | Start the terminal of the container (*-it* interactive terminal) |
+
+## Example - Download and run Docker container
 
 ```
 docker run -e POSTGRES_PASSWORD=mysecretpassword postgres:13.10
@@ -48,7 +132,7 @@ Status: Downloaded newer image for postgres:14.7
 ...
 ```
 
-Show running containers
+Example - Show running containers
 
 ```
 docker ps
