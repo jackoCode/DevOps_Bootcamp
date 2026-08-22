@@ -132,7 +132,7 @@ Status: Downloaded newer image for postgres:14.7
 ...
 ```
 
-Example - Show running containers
+## Example - Show running containers
 
 ```
 docker ps
@@ -140,3 +140,32 @@ CONTAINER ID   IMAGE            COMMAND                  CREATED          STATUS
 9936891e686d   postgres:14.7    "docker-entrypoint.s…"   25 seconds ago   Up 24 seconds   5432/tcp   gallant_jennings
 ace35922c03f   postgres:13.10   "docker-entrypoint.s…"   8 minutes ago    Up 8 minutes    5432/tcp   vigorous_blackwell
 ```
+
+## Developing with Docker
+
+See GitLab repository for an example https://gitlab.com/twn-devops-bootcamp/latest/07-docker/js-app
+
+## Docker Compose
+
+````yaml
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    ports:
+     - 27017:27017
+    environment:
+     - MONGO_INITDB_ROOT_USERNAME=admin
+     - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+     - mongo-data:/data/db
+  mongo-express:
+    image: mongo-express
+    restart: always  # Make sure MongoExpress can connect to MongoDB container (in case MongoExpress started before MongoDB)
+    ports:
+     - 8081:8081
+    environment:
+     - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+     - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+     - ME_CONFIG_MONGODB_SERVER=mongodb
+````
