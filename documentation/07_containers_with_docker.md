@@ -249,3 +249,42 @@ Add to */etc/docker/daemon.json*
 curl -u <username:password> -X GET '<Nexus IP>/service/rest/v1/components?repository=<repo name>'
 ```
 
+## Deploy Docker application on a server
+
+**Add new service to the Docker Compose file**
+
+```yaml
+services:
+  my-app:
+    image: <docker-registry>/<app name:app tag>
+    ports:
+     - 3000:3000
+```
+
+## Docker volumes
+
+Docker volumes are used for persistence data storage. The physical host file system
+is mounted in the virtual file system of the container.
+
+**Create a Docker volume**
+
+| Command                                        | Info                                                                                          |
+|------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| docker run -v <*host volume:container volume*> | Map the host file system to the container file system                                         |
+| docker run -v <*container volume*>             | The host file system will automaticaly mapped to the container file system (anonymous volume) |
+| docker run -v <*name:container volume*>        | Named volume (should be used)                                                                 |
+
+**Add volumes to the Docker compose file**
+
+```yaml
+version: '3'
+services:
+  mongodb:
+    ...
+    volumes:
+     - mongo-data:/data/db
+...
+volumes:
+  mongo-data:
+    driver: local
+```
