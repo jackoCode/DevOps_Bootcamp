@@ -70,19 +70,19 @@ This command will bind the host port *6000* to the container port *6973*.
 
 ## Docker commands
 
-| Command                                        | Info                                                             |
-|------------------------------------------------|------------------------------------------------------------------|
-| docker image                                   | Shows all images on the local machine                            |
-| docker ps                                      | Shows all running containers                                     |
-| docker ps -a                                   | Shows all running and not running containers                     |
-| docker run <*image*>                           | Run a new container from an image                                |
-| docker run -d <*image*>                        | Run the container in detached mode                               |
-| docker run -p <*host port*>:<*container port*> | Bind the container port to a host port                           |
-| docker run --name <*container name*>           | Run the container with the specified name                        |
-| docker stop <*container ID/name*>              | Stop the container                                               |
-| docker start <*container ID/name*>             | Start a container                                                |
-| docker logs <*container ID/name*>              | Shows the logs of the container                                  |
-| docker exec -it <*container ID/name*>          | Start the terminal of the container (*-it* interactive terminal) |
+| Command                                         | Info                                                                                                         |
+|-------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| docker image                                    | Shows all images on the local machine                                                                        |
+| docker ps                                       | Shows all running containers                                                                                 |
+| docker ps -a                                    | Shows all running and not running containers                                                                 |
+| docker run <*image*>                            | Run a new container from an image                                                                            |
+| docker run -d <*image*>                         | Run the container in detached mode                                                                           |
+| docker run -p <*host port*>:<*container port*>  | Bind the container port to a host port                                                                       |
+| docker run --name <*container name*>            | Run the container with the specified name                                                                    |
+| docker stop <*container ID/name*>               | Stop the container                                                                                           |
+| docker start <*container ID/name*>              | Start a container                                                                                            |
+| docker logs <*container ID/name*>               | Shows the logs of the container                                                                              |
+| docker exec -it <*container ID/name*> /bin/bash | Start the terminal of the container (*-it* interactive terminal)<br>If */bin/bash* not working use */bin/sh* |
 
 ## Example - Download and run Docker container
 
