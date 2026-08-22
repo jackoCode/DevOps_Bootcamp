@@ -280,11 +280,67 @@ is mounted in the virtual file system of the container.
 version: '3'
 services:
   mongodb:
-    ...
+    #...
     volumes:
-     - mongo-data:/data/db
-...
+     - mongo-data:/data/db  # Location in the container
+#...
 volumes:
   mongo-data:
-    driver: local
+    driver: local  # Create volume on the local file system
 ```
+All files form */data/db* inside the container will be duplicated to the *local* volume.
+
+**Docker volume locations**
+
+*Windows*
+
+```C:\ProgramData\docker\volumes```
+
+*Linux and macOS*
+
+```/var/lib/docker/volumes```
+
+NOTE: This path can not be accessed directly on macOS. To access the shell of the 
+Docker VM in order to view volume information, use this command:
+```docker run -it --privileged --pid=host debian nsenter -t 1 -m -u -n -i sh```
+
+## Nexus as a container
+
+https://hub.docker.com/r/sonatype/nexus3
+
+1. Create a new droplet
+2. Rename droplet
+3. Edit firewall settings
+4. Install Docker on the droplet
+5. Create a Docker volume<br> ```docker volume create --name nexus-data```
+6. Run Nexus container<br> ```docker run -d -p 8081:8081 --name nexus -v nexus-data:/nexus-data sonatype/nexus3```
+
+By default, a user *nexus* will be created.
+
+| Command                        | Info                                    |
+|--------------------------------|-----------------------------------------|
+| docker volume ls               | Shows the Docker volumes                |
+| docker inspect <*volume name*> | Shows more information about the volume |
+
+## Docker best practices
+
+- Use official Docker images as base image.
+- Use specific image version.
+- User leaner OS distro (e.g., *alpine*).
+- Optimize caching image layers. Order Dockerfile commands from least to most frequently changing.
+- Exclude with *.dockerignore* file.
+- Separate *build stage* from *runtime stage* (Multi-Stage Build).
+e.g.,
+```dockerfile
+# Build stage
+FROM maven AS build
+WORKDIR /app
+COPY myapp /app
+RUN mvn package
+
+# Run stage
+FROM tomcat
+COPY --from=build /app/target/file.war /usr/local/tomcat/...
+```
+- Use the least privileged user.
+- Scan images for vulnerabilities with ```docker scout cves <image name:image tag>```
