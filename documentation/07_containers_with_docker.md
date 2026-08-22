@@ -147,6 +147,8 @@ See GitLab repository for an example https://gitlab.com/twn-devops-bootcamp/late
 
 ## Docker Compose
 
+*docker-compose.yaml*
+
 ````yaml
 version: '3'
 services:
@@ -169,3 +171,81 @@ services:
      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
      - ME_CONFIG_MONGODB_SERVER=mongodb
 ````
+
+| Command                                    | Info                                                                            |
+|--------------------------------------------|---------------------------------------------------------------------------------|
+| docker-compose -f <*yaml file name*> up    | Start the container(s). Docker compose will create a Docker Network by default. |
+| docker-compose -f <*yaml file name*> down  | Stop the container(s).                                                          |
+
+## Dockerfile
+
+| Keyword          | Info                                       |
+|------------------|--------------------------------------------|
+| FROM <*image*>   | Install image                              |
+| ENV <*variable*> | Set environmental variable                 |
+| RUN <*command*>  | Execute Linux command                      |
+| COPY             | Copy form host to container                |
+| CMD              | Start the application (entrypoint command) |
+
+**Build image**
+
+```docker build -t <image name>:<image tag> <Dockerfile location>```
+
+**Delete image**
+
+| Command                    | Info             |
+|----------------------------|------------------|
+| docker rm <*container ID*> | Delete container |
+| docker rmi <*image ID*>    | Delete image     |
+
+Container needs to be deleted first.
+
+## Docker registry
+
+**Nexus config**
+
+- Add a new repository *docker hosted*
+- Add new role *nx-repository-view-docker-docker-hosted-**
+- Set port (e.g., 8083) for HTTP in the repository settings
+- Open port in the firewall settings
+- Realms add *Docker Bearer Token*
+
+**Configure insecure connection**
+
+*Linux*
+
+Add to */etc/docker/daemon.json*
+```
+{
+    "insecure-registries":["<regestry URL:regestry port>"]
+}
+```
+
+*Docker Desktop*
+
+- Open *Preferences*
+- Go to *Docker Engine*
+- Insert ```"insecure-registries":["<regestry URL:regestry port>"]``` after ```"experimental..."``` line
+
+**Login to registry**
+
+| Command                                     | Info                                                                |
+|---------------------------------------------|---------------------------------------------------------------------|
+| docker login <*registry URL:registry port*> | Login token will be added to *~/.docker/config.json* on first login |
+
+**Image naming**
+
+```registryDomain/imageName:imageTag``` e.g., *docker.io/library/mongo:4.2*
+
+| Command                                                                      | Info                  |
+|------------------------------------------------------------------------------|-----------------------|
+| docker pull <*Nexus IP:Nexus port*>/<*app name:app tag*>                     | Pull image from Nexus |
+| docker tag <*app name:app tag*> <*Nexus IP:Nexus port*>/<*app name:app tag*> | Tag image             |
+| docker push <*Nexus IP:Nexus port*>/<*app name:app tag*>                     | Push image to Nexus   |
+
+**Fetch image**
+
+```bash
+curl -u <username:password> -X GET '<Nexus IP>/service/rest/v1/components?repository=<repo name>'
+```
+
