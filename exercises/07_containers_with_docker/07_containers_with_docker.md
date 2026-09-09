@@ -2,6 +2,8 @@
 
 Use repository https://gitlab.com/twn-devops-bootcamp/latest/07-docker/docker-exercises
 
+New repository https://gitlab.com/jackoCodes/devops-docker-exercise#
+
 ## Exercise 0
 
 ```bash
@@ -131,10 +133,100 @@ volumes:
 
 ## Exercise 4
 
+**Dockerfile**
+
+```dockerfile
+FROM openjdk:17.0.2-jdk
+EXPOSE 8080
+RUN mkdir /opt/app
+COPY build/libs/docker-exercises-project-1.0-SNAPSHOT.jar /opt/app
+WORKDIR /opt/app
+CMD ["java", "-jar", "docker-exercises-project-1.0-SNAPSHOT.jar"]
+```
+
 ## Exercise 5
+
+**Build Java jar**
+
+```bash
+gradle build
+```
+**Docker image**
+
+```bash
+docker build -t java-repo/java-app:1.0-SNAPSHOT .
+```
+**Push image**
+
+```bash
+docker push java-repo/java-app:1.0-SNAPSHOT
+```
 
 ## Exercise 6
 
+**Updated docker-compose.yaml**
+
+*Add application*
+
+```yaml
+services:
+
+  java-app:
+    image: java-repo/java-app:1.0-SNAPSHOT
+    container_name: java-app
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PW: ${DB_PW}
+      DB_SERVER: ${DB_SERVER}
+      DB_NAME: ${DB_NAME}
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+          condition: service_healthy
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: ${TEST_DB}
+      MYSQL_USER: ${USER_ADMIN}
+      MYSQL_PASSWORD: ${USER_ADMIN_PW}
+      MYSQL_ROOT_PASSWORD: ${USER_ROOT_PW}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: ${PMA_HOST}
+      PMA_PORT: ${PMA_PORT}
+      MYSQL_ROOT_PASSWORD: ${USER_ROOT_PW}
+    ports:
+      - "8083:80"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
+    driver: local
+```
+
 ## Exercise 7
 
-## Exercise 8
+**Configure insecure connection on the server**
+
+Add to */etc/docker/daemon.json*
+```
+{
+    "insecure-registries":["<regestry URL:regestry port>"]
+}
+```
