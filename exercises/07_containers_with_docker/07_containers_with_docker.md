@@ -83,7 +83,51 @@ java -jar build/libs/docker-exercises-project-1.0-SNAPSHOT.jar
 
 ## Exercise 2
 
+**Run MySQL GUI container**
+
+```bash
+docker run -p 8083:80 --name phpmyadmin --link mysql:db -d phpmyadmin/phpmyadmin
+```
+
+*localhost:8083*
+
+![php_my_admin.png](../../media/pics/exercises/07_containers_with_docker/php_my_admin.png)
+
 ## Exercise 3
+
+**docker-compose.yaml**
+
+```yaml
+services:
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: test-db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: adminpw
+      MYSQL_ROOT_PASSWORD: rootpw
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+    ports:
+      - "8083:80"
+
+volumes:
+  mysql_data:
+    driver: local
+```
+**Run docker-compose.yaml with IntelliJ**
+
+![run_docker_compose.png](../../media/pics/exercises/07_containers_with_docker/run_docker_compose.png)
 
 ## Exercise 4
 
