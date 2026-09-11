@@ -121,3 +121,55 @@ The output of the Jenkins job can be found in ```/var/jenkins_home/workspace/```
 
 - *my-freestyle-job* contains the source code and the job output (e.g., jar file).
 - *my-freestyle-job@tmp* is used as a temp folder while the job is running.
+
+## Docker in Jenkins
+
+**Setup for Docker in Jenkins**
+- Stop running Jenkins container ```docker stop <container ID>```
+- ```docker run -p 8080:8080 -p 50000:50000 -d -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins:lts```
+- ```docker exec -u 0 -it <container ID> bash```
+- ```curl https://get.docker.com/ > dockerinstall && chmod 777 dockerinstall && ./dockerinstall```
+- ```chmod 666 /var/run/docker.sock```
+![docker_sock_chmod.png](../media/pics/docu/08_build_automation/docker_sock_chmod.png)
+
+## Build Docker image
+
+To build a Docker image from the source code a build step with the Docker command is added
+(*-t* used to specify the name of the image).
+![jenkins_job_build_step_docker.png](../media/pics/docu/08_build_automation/jenkins_job_build_step_docker.png)
+
+**Console output**
+
+```
+...
+[my-freestyle-job] $ /bin/sh -xe /tmp/jenkins16358888609287328001.sh
++ docker build -t java-maven-app:1.0 .
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+...
+Finished: SUCCESS
+```
+
+**Docker image**
+
+Run ```docker images``` in the terminal to get all available images.
+
+![docker_images.png](../media/pics/docu/08_build_automation/docker_images.png)
+
+**Push Docker image to Docker Hub**
+
+*Create Docker Hub repository*
+
+Create a new (private) Docker Hub repository.
+![docker_hub_repo.png](../media/pics/docu/08_build_automation/docker_hub_repo.png)
+
+*Configure Jenkins*
+- Add credentials for Docker Hub login
+![docker_hub_login_credentials.png](../media/pics/docu/08_build_automation/docker_hub_login_credentials.png)
+- Update Jenkins job
+  - Add Docker Hub credentials to the job environment
+  ![jenkins_job_env_credentials.png](../media/pics/docu/08_build_automation/jenkins_job_env_credentials.png)
+  - Update build step
+  ![jenkins_job_build_step_docker_hub.png](../media/pics/docu/08_build_automation/jenkins_job_build_step_docker_hub.png)
+  
