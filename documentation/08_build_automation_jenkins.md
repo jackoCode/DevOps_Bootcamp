@@ -194,3 +194,10 @@ Create a new (private) Docker Hub repository.
     echo $PASSWORD | docker login -u $USERNAME --password-stdin <Nexus IP address>:<Nexus port> # Repo needs to be specified explicit
     docker push <Nexus IP address>:<Nexus port>/java-maven-app:1.1 
     ```
+  
+## Freestyle to Pipeline job
+
+Using Freestyle jobs has limitations because in the most cases templates are
+used to configer build steps. Also chaining Freestyle jobs to a Pipeline is
+not a good solution. Therefore, the use of Pipeline jobs is recomended.
+Pipelines are build with scripts (Pipeline as code).
