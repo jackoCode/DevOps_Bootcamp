@@ -9,7 +9,7 @@
     - Open port 8080 (custom) for Jenkins
    ![firewall_rules.png](../media/pics/docu/08_build_automation/firewall_rules.png)
 4. SSH into Droplet ```ssh root@<droplet IP address>```
-5. ```apt update```
+5. ```apt upgrade```
 6. ```apt install docker.io```
 7. ```docker run -p 8080:8080 -p 50000:50000 -d -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts```
 
@@ -36,3 +36,38 @@ can be found.
 
 ## Install build tool in Jenkins
 
+**Maven plugin**
+
+Install Maven plugin via Jenkins UI.
+- Go to "Manage Jenkins" <br>![jenkins_manage_jenkins_icon.png](../media/pics/docu/08_build_automation/jenkins_manage_jenkins_icon.png)
+- Open "Tools"
+![jenkins_ui_tools.png](../media/pics/docu/08_build_automation/jenkins_ui_tools.png)
+- Add Maven
+![jenkins_tools_add_maven.png](../media/pics/docu/08_build_automation/jenkins_tools_add_maven.png)
+- Save
+
+**npm and Node.js**
+
+Install npm and Node.js via terminal
+- ```docker exec -u 0 -it <container ID> bash``` (0 = root user)
+- Check Linux distribution ```cat /etc/issue```. This will return the Linux
+distribution running in the container (e.g., ```Debian GNU/Linux 13 \n \l```)
+- ```apt update```
+- ```apt install curl```
+- ```curl -sL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh```
+- ```bash nodesource_setup.sh```
+- ```apt install nodejs```
+
+**Stage View plugin**
+
+Install Stage View plugin via Jenkins UI.
+- Go to "Manage Jenkins" <br>![jenkins_manage_jenkins_icon.png](../media/pics/docu/08_build_automation/jenkins_manage_jenkins_icon.png)
+- Open "Plugins"
+![jenkins_ui_plugins.png](../media/pics/docu/08_build_automation/jenkins_ui_plugins.png)
+- Search for Stage View plugin
+![jenkins_stage_view_plugin.png](../media/pics/docu/08_build_automation/jenkins_stage_view_plugin.png)
+- Install after restart
+![jenkins_stage_view_install.png](../media/pics/docu/08_build_automation/jenkins_stage_view_install.png)
+- Restart Jenkins container
+  - Get container ID ```docker ps -a```
+  - Start container ```docker start <container ID>```
