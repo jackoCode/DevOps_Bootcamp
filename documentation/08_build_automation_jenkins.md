@@ -172,4 +172,25 @@ Create a new (private) Docker Hub repository.
   ![jenkins_job_env_credentials.png](../media/pics/docu/08_build_automation/jenkins_job_env_credentials.png)
   - Update build step
   ![jenkins_job_build_step_docker_hub.png](../media/pics/docu/08_build_automation/jenkins_job_build_step_docker_hub.png)
-  
+  Note: The better way to provide the password is ```echo $PASSWORD | docker login -u $USERNAME --password-stdin```
+
+**Push Docker image to Nexus**
+
+- Because Nexus is an unsecure (http) connection a *daemon.json* needs to be created
+  (```vim /etc/docker/daemon.json```)
+    ```json
+    {
+      "insecure-registries": ["<Nexus IP address>:<Docker repo port>"]
+    }
+    ```
+- Restart Docker to apply the changes (```systemctl restart docker```)
+- Start Jenkins container (```docker start <container ID>```)
+- ```docker exec -u 0 -it <container ID> bash```
+- ```chmod 666 /var/run/docker.sock```
+- Add credentials for Nexus in Jenkins and update credentials in the job environment
+- Update build step in the Jenkins job
+    ```shell
+    docker build -t <Nexus IP address>:<Nexus port>/java-maven-app:1.1 .
+    echo $PASSWORD | docker login -u $USERNAME --password-stdin <Nexus IP address>:<Nexus port> # Repo needs to be specified explicit
+    docker push <Nexus IP address>:<Nexus port>/java-maven-app:1.1 
+    ```
