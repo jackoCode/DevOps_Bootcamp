@@ -71,3 +71,53 @@ Install Stage View plugin via Jenkins UI.
 - Restart Jenkins container
   - Get container ID ```docker ps -a```
   - Start container ```docker start <container ID>```
+
+## Jenkins - Freestyle Job
+
+**Create new Freestyle Job**
+
+- Create a new freestyle job
+![jenkins_freestyle_job_new.png](../media/pics/docu/08_build_automation/jenkins_freestyle_job_new.png)
+- Add build steps
+![jenkins_add_build_steps.png](../media/pics/docu/08_build_automation/jenkins_add_build_steps.png)
+  - npm was installed directly in the Docker container. Therefore, it is possible
+  to run npm command in a shell.
+  - Maven was installed as a plugin in Jenkins. Therefore, Maven can be configured
+  using a Jenkins template. This is not as flexible as running commands in a shell.
+
+Note: More plugins (e.g., Node.js) can be installed directly in Jenkins to use it in the build steps.
+
+**Run the job**
+
+Run the Jenkins job with "Build Now". After the job finished the result is
+shown in the "Builds" section at the bottom.
+
+![jenkins_build_now.png](../media/pics/docu/08_build_automation/jenkins_build_now.png)
+
+*Console Output*
+
+![jenkins_console_output.png](../media/pics/docu/08_build_automation/jenkins_console_output.png)
+
+**Source Code Management**
+
+Jenkins pipelines can use code directly from a source code management tool like Gitlab.
+
+*Configure Source Code Management for the job*
+
+- Add repository URL
+![scm_repo_url.png](../media/pics/docu/08_build_automation/scm_repo_url.png)
+- Configure credentials to excess the repository
+![scm_add_credentials.png](../media/pics/docu/08_build_automation/scm_add_credentials.png)
+![scm_add_credentials_type.png](../media/pics/docu/08_build_automation/scm_add_credentials_type.png)
+- Select branch to build
+![scm_select_branch.png](../media/pics/docu/08_build_automation/scm_select_branch.png)
+
+*Check job output*
+
+```docker exec -it <container ID> bash```
+
+The output of the Jenkins job can be found in ```/var/jenkins_home/workspace/```.
+![jenkins_job_output.png](../media/pics/docu/08_build_automation/jenkins_job_output.png)
+
+- *my-freestyle-job* contains the source code and the job output (e.g., jar file).
+- *my-freestyle-job@tmp* is used as a temp folder while the job is running.
