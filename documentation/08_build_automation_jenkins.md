@@ -201,3 +201,90 @@ Using Freestyle jobs has limitations because in the most cases templates are
 used to configer build steps. Also chaining Freestyle jobs to a Pipeline is
 not a good solution. Therefore, the use of Pipeline jobs is recomended.
 Pipelines are build with scripts (Pipeline as code).
+
+## Pipeline Jobs
+
+- Create a new Jenkins pipeline.
+![jenkins_new_pipeline.png](../media/pics/docu/08_build_automation/jenkins_new_pipeline.png)
+- There are now two options how to write the pipeline script:
+  1. Write the pipeline script in Jenkins.
+  ![jenkins_script.png](../media/pics/docu/08_build_automation/jenkins_script.png)
+  2. Use a pipeline script from SCM (best practise).
+  ![jenkins_script_from_scm.png](../media/pics/docu/08_build_automation/jenkins_script_from_scm.png)
+- Define Jenkinsfile. The following example is in declarative form.
+    ```
+    pipeline {
+    
+        agent any
+    
+        stages {
+    
+            stage("build") {
+                steps {
+                    echo 'building the application...'
+                }
+            }
+    
+            stage("test") {
+                steps {
+                    echo 'testing the application...'
+                }
+            }
+    
+            stage("deploy") {
+                steps {
+                    echo 'deploying the application...'
+                }
+            }
+        }
+    }
+    ```
+- Run the pipeline. The result is shown in the *Stage View*.
+![jenkins_stage_view.png](../media/pics/docu/08_build_automation/jenkins_stage_view.png)
+- Console output.
+    ```
+    Started by user admin
+    Obtained Jenkinsfile from git https://gitlab.com/jackoCodes/jenkins-java-app.git
+    [Pipeline] Start of Pipeline
+    [Pipeline] node
+    Running on Jenkins in /var/jenkins_home/workspace/my-new-pipeline
+    [Pipeline] {
+    [Pipeline] stage
+    [Pipeline] { (Declarative: Checkout SCM)
+    [Pipeline] checkout
+    ...
+    [Pipeline] stage
+    [Pipeline] { (build)
+    [Pipeline] echo
+    building the application...
+    ...
+    [Pipeline] stage
+    [Pipeline] { (test)
+    [Pipeline] echo
+    testing the application...
+    ...
+    [Pipeline] stage
+    [Pipeline] { (deploy)
+    [Pipeline] echo
+    deploying the application...
+    ...
+    [Pipeline] End of Pipeline
+    Finished: SUCCESS
+    ```
+  
+**Pipeline Jobs pros**
+
+- Want to execute two tasks in parallel.
+- Need user input.
+- Conditional statements.
+- Set variables.
+- Not limited!
+- One job with multiple stages.
+
+**Freestyle Jobs cons**
+
+- Relying on plugins.
+- Different plugins in multiple jobs.
+- Manage those plugins.
+- Manage all jobs.
+- Edit in UI.
