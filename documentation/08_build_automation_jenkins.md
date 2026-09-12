@@ -288,3 +288,324 @@ Pipelines are build with scripts (Pipeline as code).
 - Manage those plugins.
 - Manage all jobs.
 - Edit in UI.
+
+## Jenkinsfile syntax
+
+1. **Conditional statements**
+    ```
+    pipeline {
+        agent any
+        stages {
+            stage("build") {
+                when {
+                    expression {
+                        BRANCH_NAME == 'dev' && CODE_CHANGES == true
+                    }
+                }
+                steps {
+                    echo 'building the application...'
+                }
+            }
+            stage("test") {
+                when {
+                    expression {
+                        BRANCH_NAME == 'dev' || BRANCH_NAME == 'master'
+                    }
+                }
+                steps {
+                    echo 'testing the application...'
+                }
+            }
+            stage("deploy") {
+                steps {
+                    echo 'deploying the application...'
+                }
+            }
+        }
+    }
+    ```
+    In this example the environment variable *BRANCH_NAME* is used. This variable
+    is provided by Jenkins. 
+    
+    Link to all available environment variables in Jenkins: 
+    http://46.101.194.124:8080/env-vars.html/
+
+2. **Define own environment variables**
+    ```
+    pipeline {
+        agent any
+        environment {
+            NEW_VERSION = '1.3.0'
+        }
+        stages {
+            stage("build") {
+                steps {
+                    echo 'building the application...'
+                    echo "building version ${NEW_VERSION}"  // double quotes required
+                }
+            }
+            stage("test") {
+                steps {
+                    echo 'testing the application...'
+                }
+            }
+            stage("deploy") {
+                steps {
+                    echo 'deploying the application...'
+                }
+            }
+        }
+    }
+    ```
+
+3. **Credentials** can be used from Jenkins. The function parameter is the credential ID form Jenkins.
+    ```
+    pipeline {
+        agent any
+        environment {
+            NEW_VERSION = '1.3.0'
+            SERVER_CREDENTIALS = credentials('server-credentials')  // credentials ID from Jenkins
+        }
+        stages {
+            stage("build") {
+                steps {
+                    echo 'building the application...'
+                    echo "building version ${NEW_VERSION}"  // double quotes required
+                }
+            }
+            stage("test") {
+                steps {
+                    echo 'testing the application...'
+                }
+            }
+            stage("deploy") {
+                steps {
+                    echo 'deploying the application...'
+                    echo "deploying with ${SERVER_CREDENTIALS}"  // use credentials env
+                    sh "${SERVER_CREDENTIALS}"   // use credentials env in a script
+                    withCredentials([  // use credentials only in one stage; withCredentials can be used as a wrapper
+                        usernamePassword(credentialsId: 'server-credentials', usernameVariable: 'USER', passwordVariable: 'PWD')
+                    ]) {
+                        sh "some script ${USER} ${PWD}"  // use variables from the credentials wrapper
+                    }
+                }
+            }
+        }
+    }
+    ```
+   
+    The following plugins needs to be installed in Jenkins.
+
+    ![jenkins_credentials_plugins.png](../media/pics/docu/08_build_automation/jenkins_credentials_plugins.png)
+
+4. **Tools**
+    ```
+    pipeline {
+        agent any
+        tools {
+            maven "maven"  // name of the tool installation in Jenkins
+        }
+        stages {
+            stage("build") {
+                steps {
+                    echo 'building the application...'
+                }
+            }
+            stage("test") {
+                steps {
+                    echo 'testing the application...'
+                }
+            }
+            stage("deploy") {
+                steps {
+                    echo 'deploying the application...'
+                }
+            }
+        }
+    }
+    ```
+
+5. **Parameters** for building the pipeline with parameters.
+    ```
+    pipeline {
+        agent any
+        parameters {
+            // string (name: 'VERSION', defaultValue: '', description: 'version to deploy on prod')
+            choice (name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
+            booleanParm(name: 'executeTests', defaultValue: true, description: '')
+        }
+        stages {
+            stage("build") {
+                steps {
+                    echo 'building the application...'
+                }
+            }
+            stage("test") {
+                when {
+                    expression {
+                        params.executeTests  // is the same as params.executeTests == True
+                    }
+                }
+                steps {
+                    echo 'testing the application...'
+                }
+            }
+            stage("deploy") {
+                steps {
+                    echo 'deploying the application...'
+                    echo "deploying version ${params.VERSION}"
+                }
+            }
+        }
+    }
+    ```
+   
+    *Build with Parameters*
+
+    ![jenkins_build_with_params.png](../media/pics/docu/08_build_automation/jenkins_build_with_params.png)
+
+6. **Use external script** in the *Jenkinsfile*
+    ```
+    def gv  // define a variable for the external script
+    
+    pipeline {
+        agent any
+        parameters {
+            // string (name: 'VERSION', defaultValue: '', description: 'version to deploy on prod')
+            choice (name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
+            booleanParam(name: 'executeTests', defaultValue: true, description: '')
+        }
+        stages {
+            stage("init") {
+                steps {
+                    script {
+                        gv = load "script.groovy"  // load external script
+                    }
+                }
+            }
+            stage("build") {
+                steps {
+                    script {
+                        gv.buildApp()  // use function form external script
+                    }
+                }
+            }
+            stage("test") {
+                when {
+                    expression {
+                        params.executeTests  // is the same as params.executeTests == True
+                    }
+                }
+                steps {
+                    script {
+                        gv.testApp()  // use function form external script
+                    }
+                }
+            }
+            stage("deploy") {
+                steps {
+                    script {
+                        gv.deployApp()  // use function form external script
+                    }
+                }
+            }
+        }
+    }
+    ```
+    Example for an external script (*script.groovy*).
+    ```
+    def buildApp() {
+        echo 'building the application...'
+    }
+    
+    def testApp() {
+        echo 'testing the application...'
+    }
+    
+    def deployApp() {
+        echo 'deploying the application...'
+        echo "deploying version ${params.VERSION}"
+    }
+    
+    return this
+    ```
+
+7. **User input**
+    ```
+    def gv
+    
+    pipeline {
+        agent any
+        parameters {
+            choice (name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
+            booleanParam(name: 'executeTests', defaultValue: true, description: '')
+        }
+        stages {
+            stage("init") {
+                steps {
+                    script {
+                        gv = load "script.groovy"
+                    }
+                }
+            }
+            stage("build") {
+                steps {
+                    script {
+                        gv.buildApp()
+                    }
+                }
+            }
+            stage("test") {
+                when {
+                    expression {
+                        params.executeTests  // is the same as params.executeTests == True
+                    }
+                }
+                steps {
+                    script {
+                        gv.testApp()
+                    }
+                }
+            }
+            stage("deploy") {
+            input {
+                message "Select the environmant to deploy to"
+                ok "Done"
+                parameters {
+                    choice (name: 'ONE', choices: ['dev', 'staging', 'prod'], description: 'Environments')
+                    choice (name: 'TWO', choices: ['dev', 'staging', 'prod'], description: 'Environments')
+                }
+            }
+                steps {
+                    script {
+                        gv.deployApp()
+                        echo "Deploying to ${ONE}"
+                        echo "Deploying to ${TWO}"
+                    }
+                }
+            }
+        }
+    }
+    ```
+
+    Pipeline will pause and wait for *user input*. In this example multiple inputs are defined.
+
+    ![jenkins_user_input_in_pipeline.png](../media/pics/docu/08_build_automation/jenkins_user_input_in_pipeline.png)
+
+    The user input can also be saved in a variable. This can be done if only one input is required and the input value
+    is used in multiple stages.
+    ```
+    stage("deploy") {
+        steps {
+            script {
+                env.ENV = input message: "Select the environmant to deploy to", ok: "Done", parameters: [choice (name: 'ONE', choices: ['dev', 'staging', 'prod'], description: 'Environments')]
+    
+                gv.deployApp()
+                echo "Deploying to ${ENV}"
+            }
+        }
+    }
+    ```
+
+Note: With the *Replay* option in Jenkins the scripts can be modified and the pipeline rebuild with this modifications.
+![jenkins_replay.png](../media/pics/docu/08_build_automation/jenkins_replay.png)
