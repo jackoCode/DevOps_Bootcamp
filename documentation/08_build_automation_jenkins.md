@@ -761,3 +761,33 @@ It is possible to restart a pipeline form a specific stage.
 
 ## Jenkins Shared Library
 
+**Use cases**
+- Microservices
+- Multiple projects in a company
+
+**Benefits**
+- Code reusability
+- Easy maintenance
+- Consistency and standardization
+- Faster pipeline creation
+- Improved collaboration
+
+**Create Shared Library in Jenkins**
+
+![shared_library_config.png](../media/pics/docu/08_build_automation/shared_library_config.png)
+
+**Implement Shared Library code structure**
+
+The project structure for a *shared library* always contains these folders.
+
+![shared_library_code_structure.png](../media/pics/docu/08_build_automation/shared_library_code_structure.png)
+
+| Folder    | Info                                                                 |
+|-----------|----------------------------------------------------------------------|
+| vars      | - Function called from Jenkinsfile<br>- Each function/execution step |
+| src       | - Helper code                                                        |
+| resources | - Use external libraries<br>- Non groovy files                       |
+
+**Implementation**
+
+https://gitlab.com/jackoCodes/jenkins-shared-library.git
