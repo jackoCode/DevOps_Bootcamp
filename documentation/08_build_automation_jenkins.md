@@ -681,3 +681,83 @@ return this
 
 ## Multibranch Pipeline
 
+**Create a multibranch pipeline**
+
+![jenkins_multibranch_pipeline.png](../media/pics/docu/08_build_automation/jenkins_multibranch_pipeline.png)
+
+*Configure multibranch pipeline*
+
+Add a regex in *Behavior* to filter for a specific branch name.
+
+![jenkins_multibranch_pipeline_config.png](../media/pics/docu/08_build_automation/jenkins_multibranch_pipeline_config.png)
+
+*Jenkinsfile*
+
+Add *when* conditions if a stage should only be executed for a specific branch.
+In this case *build* and *deploy* is only executed for *master* branch.
+
+```
+pipeline {
+    agent any
+    stages {
+        stage("test") {
+            steps {
+                script {
+                    echo "testing the application..."
+                    echo "executing pipeline for branch $BRANCH_NAME"
+                }
+            }
+        }
+        stage("build") {
+            when {
+                expression {
+                    BRANCH_NAME == "master"
+                }
+            }
+            steps {
+                script {
+                    echo "building the application..."
+                }
+            }
+        }
+        stage("deploy") {
+            when {
+                expression {
+                    BRANCH_NAME == "master"
+                }
+            }
+            steps {
+                script {
+                    echo "deploying the application..."
+                }
+            }
+        }
+    }
+}
+```
+
+*Run multibranch pipeline*
+
+The multibranch pipeline will scan all branches for a *Jenkinsfile* and execute the branches containing one.
+The branches will be executed according the conditions specified in the *Jenkinsfile*.
+
+![jenkins_multibranch_pipeline_run.png](../media/pics/docu/08_build_automation/jenkins_multibranch_pipeline_run.png)
+
+## Jenkins Jobs Overview
+
+**Restart from stage**
+
+It is possible to restart a pipeline form a specific stage.
+
+![jenkins_restart_from_stage.png](../media/pics/docu/08_build_automation/jenkins_restart_from_stage.png)
+
+## Credentials in Jenkins
+
+| Credential scope | Info                                                               |
+|------------------|--------------------------------------------------------------------|
+| System           | Only available on Jenkins server (not for jobs).                   |
+| Global           | Available everywhere.                                              |
+| Project          | Scoped to a pipeline (project). Hide credentials between projects. |
+
+## Jenkins Shared Library
+
