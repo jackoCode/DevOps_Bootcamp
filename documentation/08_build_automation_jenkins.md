@@ -609,3 +609,75 @@ Pipelines are build with scripts (Pipeline as code).
 
 Note: With the *Replay* option in Jenkins the scripts can be modified and the pipeline rebuild with this modifications.
 ![jenkins_replay.png](../media/pics/docu/08_build_automation/jenkins_replay.png)
+
+## Create complete pipeline
+
+**Jenkinsfile**
+
+```
+def gv
+
+pipeline {
+    agent any
+    tools {
+        maven "maven"
+    }
+    stages {
+        stage("init") {
+            steps {
+                script {
+                    gv = load "script.groovy"
+                }
+            }
+        }
+        stage("build jar") {
+            steps {
+                script {
+                    gv.buildJar()
+                }
+            }
+        }
+        stage("build image") {
+            steps {
+                script {
+                    gv.buildImage()
+                }
+            }
+        }
+        stage("deploy") {
+            steps {
+                script {
+                    gv.deployApp()
+                }
+            }
+        }
+    }
+}
+```
+
+**script.groovy**
+
+```
+def buildJar() {
+    echo 'building the application...'
+    sh "mvn package"
+}
+
+def buildImage() {
+    echo "building the application..."
+    withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+        sh "docker build -t jackocodes/demo-repo:jma-2.0 ."
+        sh "echo $PASS | docker login -u $USER --password-stdin"
+        sh "docker push jackocodes/demo-repo:jma-2.0"
+    }
+}
+
+def deployApp() {
+    echo 'deploying the application...'
+}
+
+return this
+```
+
+## Multibranch Pipeline
+
