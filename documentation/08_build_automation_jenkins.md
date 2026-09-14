@@ -791,3 +791,36 @@ The project structure for a *shared library* always contains these folders.
 **Implementation**
 
 https://gitlab.com/jackoCodes/jenkins-shared-library.git
+
+## Webhooks
+
+Trigger a pipeline job automatically.
+
+**Plugins in Jenkins**
+
+| Plugin                           | Info                                |
+|----------------------------------|-------------------------------------|
+| GitLab Plugin                    | Used for single pipeline jobs.      |
+| Multibranch Scan Webhook Trigger | Used for multibranch pipeline jobs. |
+
+**Config for single pipeline jobs**
+
+Manage Jenkins -> System
+
+![webhook_config_single.png](../media/pics/docu/08_build_automation/webhook_config_single.png)
+
+A GitLab API token is used for *Credentials*. This token is created in GitLab.
+
+*Pipeline config*
+
+![webhook_pipeline_config_triggers.png](../media/pics/docu/08_build_automation/webhook_pipeline_config_triggers.png)
+
+**Config for multibranch pipeline job**
+
+*Jenkins trigger token*
+
+![webhook_multi_pipeline_config_triggers.png](../media/pics/docu/08_build_automation/webhook_multi_pipeline_config_triggers.png)
+
+*GitLab settings*
+
+![webhook_gitlab_settings.png](../media/pics/docu/08_build_automation/webhook_gitlab_settings.png)
