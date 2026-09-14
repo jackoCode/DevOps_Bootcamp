@@ -906,3 +906,43 @@ CMD java -jar java-maven-app-*.jar
 ```
 
 Additional information https://www.mojohaus.org/build-helper-maven-plugin/parse-version-mojo.html
+
+**Commit updated version to GitLab**
+
+*Jenkinsfile*
+
+Add a new stage.
+
+```
+stage("commit version update") {
+    steps {
+        script {
+            withCredentials([string(credentialsId: 'jenkins-commit-token', variable: 'TOKEN')]) {
+                sh 'git config --global user.email "jenkins@example.com"'
+                sh 'git config --global user.name "jenkins"'
+
+                sh 'git status'
+                sh 'git branch'
+                sh 'git config --list'
+
+                sh "git remote set-url origin https://oauth2:${TOKEN}@gitlab.com/jackoCodes/jenkins-java-app.git"
+                sh 'git add .'
+                sh 'git commit -m "ci: version bump"'
+                sh 'git push origin HEAD:master'
+            }
+        }
+    }
+}
+```
+
+**Ignore pipeline trigger for Jenkins commits**
+
+If an automated pipeline trigger for new commits in GitLab was configured then 
+everytime Jenkins commits the updated version number a pipeline will be triggered.
+For this case install the *Ignore Committer Strategy* plugin.
+
+*Config*
+
+In the pipeline config a new field is added after installing the plugin.
+
+![build_strategy.png](../media/pics/docu/08_build_automation/build_strategy.png)
