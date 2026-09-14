@@ -824,3 +824,85 @@ A GitLab API token is used for *Credentials*. This token is created in GitLab.
 *GitLab settings*
 
 ![webhook_gitlab_settings.png](../media/pics/docu/08_build_automation/webhook_gitlab_settings.png)
+
+## Dynamically Increment Application Version
+
+**General**
+
+*Common practice*
+
+Example:
+
+| 4.                                                               | 2.                                     | 1                             | -xxx                                       |
+|------------------------------------------------------------------|----------------------------------------|-------------------------------|--------------------------------------------|
+| Major                                                            | Minor                                  | Patch                         | Suffix                                     |
+| - big changes<br>- breaking changes<br>- not backward-compatible | - new feature<br>- backward-compatible | - minor changes and bug fixes | - for more information (e.g., "-SNAPSHOT") |
+
+**Maven**
+
+*Jenkinsfile*
+
+```
+pipeline {
+    agent any
+    tools {
+        maven "maven"
+    }
+    stages {
+        stage("increment version") {
+            steps {
+                script {
+                    echo "increment app version"
+                    sh "mvn build-helper:parse-version versions:set \
+                        -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
+                        versions:commit"
+                    def matcher = readFile("pom.xml") =~ "<version>(.+)</version>"  // read the version from the pom.xml file
+                    def version = matcher[0][1]  // get the first value from the array and the value in it
+                    env.IMAGE_NAME = "$version-$BUILD_NUMBER"  // new version number
+                }
+            }
+        }
+        stage("build") {
+            steps {
+                script {
+                    echo 'building the application...'
+                    sh "mvn clean package"  // clean target folder
+                }
+            }
+        }
+        stage("build image") {
+            steps {
+                script {
+                    echo "building the application..."
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                        sh "docker build -t jackocodes/demo-repo:${IMAGE_NAME} ."
+                        sh "echo $PASS | docker login -u $USER --password-stdin"
+                        sh "docker push jackocodes/demo-repo:${IMAGE_NAME}"
+                    }
+                }
+            }
+        }
+        stage("deploy") {
+            steps {
+                script {
+                    echo "Deploying the application..."
+                }
+            }
+        }
+    }
+}
+```
+*Dockerfile*
+
+```dockerfile
+FROM amazoncorretto:17-alpine-jdk
+
+EXPOSE 8080
+
+COPY ./target/java-maven-app-*.jar /usr/app/
+WORKDIR /usr/app
+
+CMD java -jar java-maven-app-*.jar
+```
+
+Additional information https://www.mojohaus.org/build-helper-maven-plugin/parse-version-mojo.html
