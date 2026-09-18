@@ -15,7 +15,7 @@
 
 ## Initialize Jenkins
 
-1. ```docker exex -it <container ID> bash```
+1. ```docker exec -it <container ID> bash```
 2. ```cat /var/jenkins_home/secrets/initialAdminPassword```
 3. Use initial admin password for first login
 ![jenkins_init_page.png](../media/pics/docu/08_build_automation/jenkins_init_page.png)
