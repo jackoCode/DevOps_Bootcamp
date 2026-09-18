@@ -774,6 +774,8 @@ It is possible to restart a pipeline form a specific stage.
 
 **Create Shared Library in Jenkins**
 
+Manage Jenkins -> System -> Global Trusted Pipeline Libraries
+
 ![shared_library_config.png](../media/pics/docu/08_build_automation/shared_library_config.png)
 
 **Implement Shared Library code structure**
