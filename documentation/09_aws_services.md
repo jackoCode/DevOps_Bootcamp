@@ -108,7 +108,7 @@ It is possible to assign multiple *key/value* pairs to distinguish between insta
 
 *Key pair*
 
-Create or choose a key pair to connect to the server (e.g., SSH).
+Create or choose a key pair to connect to the server (e.g., SSH). 
 
 ![ec2_key_pair.png](../media/pics/docu/09_aws_services/ec2_key_pair.png)
 
@@ -119,9 +119,19 @@ Create or choose a key pair to connect to the server (e.g., SSH).
 | .pem            | Linux and macOS |
 | .ppk            | Windows         |
 
-After creating the key pair the private key will be downloaded automatically.
-
 ![ec2_key_pair_create.png](../media/pics/docu/09_aws_services/ec2_key_pair_create.png)
+
+After creating the key pair the private key will be downloaded automatically.
+This file needs to be stored in the *.ssh* folder.
+
+```bash
+mv Downloads/<file-name>.pem ~/.ssh/
+```
+Also, the access right of the file needs to be changed.
+
+```bash
+chmod 400 .ssh/<file-name>.pem
+```
 
 *Network settings*
 
