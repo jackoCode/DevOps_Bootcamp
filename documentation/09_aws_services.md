@@ -61,3 +61,25 @@ This allows the user to access via the CLI.
   - *Network ACLs* -> *subnet* level
   - *Security Groups* -> *instance* level
 
+## CIDR Blocks
+
+Range of IP addresses.
+
+*Example*
+
+| IPv4 CIDR     | Range                       |
+|---------------|-----------------------------|
+| 172.31.0.0/16 | 172.31.0.0 - 172.31.255.255 |
+
+IP Calculator https://mxtoolbox.com/subnetcalculator.aspx <br>
+IP Calculator with binary values https://jodies.de/ipcalc?host=10.0.0.0&mask1=1&mask2=
+
+**Sub CIDR Blocks**
+
+A CIDR block can be divided in sub CIDR blocks for multiple subnets.
+
+*Example*
+
+![visual_subnet_calculator.png](../media/pics/docu/09_aws_services/visual_subnet_calculator.png)
+
+Visual subnet calculator https://www.davidc.net/sites/default/subnets/subnets.html
