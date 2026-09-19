@@ -15,11 +15,11 @@
 
 ## Scope
 
-| Scope       | Services and info     |
-|-------------|-----------------------|
-| AWS Account | IAM, Billing, Route53 |
-| Region      | S3, VPC, DynomoDB     |
-| AZ          | EC2, EBS, RDS         |
+| Scope                  | Services and info     |
+|------------------------|-----------------------|
+| AWS Account            | IAM, Billing, Route53 |
+| Region                 | S3, VPC, DynomoDB     |
+| Availability zone (AZ) | EC2, EBS, RDS         |
 
 ## Identity and Access Management (IAM)
 
@@ -45,3 +45,19 @@ This allows the user to access via the CLI.
 ![admin_new_access_key.png](../media/pics/docu/09_aws_services/admin_new_access_key.png)
 
 ![admin_new_access_key_tag.png](../media/pics/docu/09_aws_services/admin_new_access_key_tag.png)
+
+## VPC
+
+- Private network in the cloud.
+- Virtual representation of network infrastructure.
+
+**Subnet**
+
+- Firewall rule configuration makes it either *private* or *public*.
+- Example: <br> Database is running in a private subnet and the web application is running in a public subnet.
+- Every subnet has an internal IP address range on the VPC level.
+- Controlling access
+  - Rules are created on the VPC level.
+  - *Network ACLs* -> *subnet* level
+  - *Security Groups* -> *instance* level
+
