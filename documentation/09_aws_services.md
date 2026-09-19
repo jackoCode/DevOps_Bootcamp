@@ -83,3 +83,8 @@ A CIDR block can be divided in sub CIDR blocks for multiple subnets.
 ![visual_subnet_calculator.png](../media/pics/docu/09_aws_services/visual_subnet_calculator.png)
 
 Visual subnet calculator https://www.davidc.net/sites/default/subnets/subnets.html
+
+## EC2 Virtual Cloud Server
+
+Repository https://gitlab.com/jackoCodes/aws-react-example#
+
