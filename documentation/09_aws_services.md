@@ -157,3 +157,57 @@ there are access rules configured.
 *Configure storage*
 
 ![ec2_configure_storage.png](../media/pics/docu/09_aws_services/ec2_configure_storage.png)
+
+**SSH into the server**
+
+```bash
+ssh -i ~/.ssh/<key-file-name>.pem ec2-user@<server-IP-address>
+```
+Connecting to the EC2 instance via SSH is always done with the user *ec2-user*.
+
+**Install Docker**
+
+Note: The package manager used on this instance is *yum*. 
+
+If a new instance was created the first stap should always be to update the
+package manager.
+
+```bash
+sudo yum update
+```
+
+*Install Docker with yum*
+
+```bash
+sudo yum install docker
+```
+
+*Start Docker*
+
+```bash
+sudo service docker start
+```
+
+*Add user ec2-user to group docker*
+
+```bash
+sudo usermod -aG docker $USER
+```
+Note: This change will be effective after the next login.
+
+**Deploy Docker image**
+
+1. Login to Docker
+    ```bash
+    docker login
+    ```
+2. Download the image
+    ```bash
+    docker pull <repository-name>:<tag>
+    ```
+3. Run
+    ```bash
+    docker run -d -p <server-port>:<app-port> <repository-name>:<tag> 
+    ```
+4. Add port <server-port> to firewall inbound rules
+![ec2_edit_inbound_rules.png](../media/pics/docu/09_aws_services/ec2_edit_inbound_rules.png)
