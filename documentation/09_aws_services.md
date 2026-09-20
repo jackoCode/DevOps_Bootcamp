@@ -211,3 +211,34 @@ Note: This change will be effective after the next login.
     ```
 4. Add port <server-port> to firewall inbound rules
 ![ec2_edit_inbound_rules.png](../media/pics/docu/09_aws_services/ec2_edit_inbound_rules.png)
+
+## Deploy to EC2 server from Jenkins
+
+1. Install *SSH Agent* plugin in Jenkins.
+![jenkins_plugin_ssh_agent.png](../media/pics/docu/09_aws_services/jenkins_plugin_ssh_agent.png)
+2. Create a new multibranch pipeline (if not already exists).
+3. Add *credentials* to the pipeline. Go to *<multibranch-pipeline> -> Credentials -> Folder -> Global*
+![jenkins_add_ssh_credentials.png](../media/pics/docu/09_aws_services/jenkins_add_ssh_credentials.png)
+
+   | Field       | Info                                                                 |
+   |-------------|----------------------------------------------------------------------|
+   | ID          | ID/name of the credential used in Jenkins                            |
+   | Username    | The user name is always *ec2-user* for EC2 instances.                |
+   | Private Key | Check *Enter directly* and copy the key file content into the field. |
+4. Add the SSH agent connection to the *Jenkinsfile*.
+    ```
+    ...
+    stage("<stage name>") {
+        steps {
+            script {
+                sshagent(['<key ID>']) {
+                    // some code
+                }
+    ...
+    ```
+   Note: In *Pipeline Syntax* the needed code can be created automatically.
+![jenkins_pipeline_syntax.png](../media/pics/docu/09_aws_services/jenkins_pipeline_syntax.png)
+5. Add the Jenkins IP address (for SSH) to the firewall setting on the EC2 instance.
+
+**Note:** Docker login must be done on EC2 instance before running the pipeline.
+
