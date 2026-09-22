@@ -218,7 +218,7 @@ Note: This change will be effective after the next login.
 ![jenkins_plugin_ssh_agent.png](../media/pics/docu/09_aws_services/jenkins_plugin_ssh_agent.png)
 2. Create a new multibranch pipeline (if not already exists).
 3. Add *credentials* to the pipeline. Go to *<multibranch-pipeline> -> Credentials -> Folder -> Global*
-![jenkins_add_ssh_credentials.png](../media/pics/docu/09_aws_services/jenkins_add_ssh_credentials.png)
+![jenkins_add_ssh_credentials.png](../media/pics/docu/09_aws_services/aws_ecr_create_new.png)
 
    | Field       | Info                                                                 |
    |-------------|----------------------------------------------------------------------|
@@ -363,4 +363,27 @@ stage('commit version update'){
     }
 }
 
+```
+## Elastic Container Registry (AWS ECR)
+
+**Create new private repository**
+
+![aws_ecr.png](../media/pics/docu/09_aws_services/aws_ecr.png)
+
+![aws_ecr_create_new.png](../media/pics/docu/09_aws_services/aws_ecr_create_new.png)
+
+*ECR push commands for the repository*
+
+![aws_ecr_push_commands.png](../media/pics/docu/09_aws_services/aws_ecr_push_commands.png)
+
+```bash
+aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 699289397297.dkr.ecr.eu-central-1.amazonaws.com
+```
+
+```bash
+docker tag <app-name>:<tag> 699289397297.dkr.ecr.eu-central-1.amazonaws.com/<app-name>:<tag>
+```
+
+```bash
+docker push 699289397297.dkr.ecr.eu-central-1.amazonaws.com/<app-name>:<tag>
 ```
