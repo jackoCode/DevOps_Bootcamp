@@ -387,3 +387,61 @@ docker tag <app-name>:<tag> 699289397297.dkr.ecr.eu-central-1.amazonaws.com/<app
 ```bash
 docker push 699289397297.dkr.ecr.eu-central-1.amazonaws.com/<app-name>:<tag>
 ```
+
+## AWS CLI
+
+**CLI configuration**
+
+```bash
+aws ec2 configure
+
+AWS Access Key ID [None]: <user key ID>
+AWS Secret Access Key [None]: <user access key>
+Default region name [None]: eu-central-1
+Default output format [None]: json
+```
+**Create security group**
+
+Get VPC ID with ```aws ec2 describe-vpcs```.
+
+```bash
+aws ec2 create-security-group 
+    --group-name my-sg 
+    --description "my SG" 
+    --vpc-id vpc-07f0945245241e010
+```
+**Configure security group rules**
+
+Get security group information with ```aws ec2 describe-security-groups```.
+To get the information for only one security group use ```--group-ids``` flag.
+
+```bash
+aws ec2 authorize-security-group-ingress
+    --group-id sg-022bba112e8fbd4de
+    --protocol tcp
+    --port 22
+    --cidr 80.144.169.16/32
+```
+**Create key-pair**
+
+```bash
+aws ec2 create-key-pair
+    --key-name MyKqCli
+    --query 'KeyMaterial'
+    --output text > MyKpCli.pem
+```
+**Create new AWS EC2 instance**
+
+- Get *image-id* from AWS UI.
+- Get *subnet-id* with ```aws ec2 describe-subnets```.
+- Change access permission of the key file (```chmod 400 <keyfile-name>.pem```).
+
+```bash
+aws ec2 run-instances
+    --image-id ami-06121aa3085b6f918
+    --count 1
+    --instance-type t3.micro
+    --key-name MyKpCli
+    --security-group-ids sg-022bba112e8fbd4de
+    --subnet-id subnet-0aba22ed0a513b636
+```
