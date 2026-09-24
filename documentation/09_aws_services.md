@@ -402,6 +402,9 @@ Default output format [None]: json
 ```
 **Create security group**
 
+- *AWS CLI* installation documentation: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+- List of AWS CLI commands: https://gitlab.com/twn-devops-bootcamp/latest/09-aws/cli-commands/-/blob/main/aws-cli-commands.md?ref_type=heads
+
 Get VPC ID with ```aws ec2 describe-vpcs```.
 
 ```bash
@@ -445,3 +448,4 @@ aws ec2 run-instances
     --security-group-ids sg-022bba112e8fbd4de
     --subnet-id subnet-0aba22ed0a513b636
 ```
+
