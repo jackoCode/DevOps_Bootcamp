@@ -405,6 +405,12 @@ Default output format [None]: json
 - *AWS CLI* installation documentation: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 - List of AWS CLI commands: https://gitlab.com/twn-devops-bootcamp/latest/09-aws/cli-commands/-/blob/main/aws-cli-commands.md?ref_type=heads
 
+**Install AWS CLI (macOS)**
+
+```bash
+brew install awscli
+```
+
 Get VPC ID with ```aws ec2 describe-vpcs```.
 
 ```bash
@@ -448,4 +454,116 @@ aws ec2 run-instances
     --security-group-ids sg-022bba112e8fbd4de
     --subnet-id subnet-0aba22ed0a513b636
 ```
+## IAM CLI
 
+**Create user group**
+
+```bash
+aws iam create-group --group-name MyGroupCli
+```
+**Create user**
+
+```bash
+aws iam create-user --user-name MyUserCli
+```
+**Add user to user group**
+
+```bash
+aws iam add-user-to-group --user-name MyUserCli --group-name MyGroupCli
+```
+**Get group information**
+
+```bash
+aws iam get-group --group-name MyGroupCli
+```
+**Set permission for user group**
+
+```bash
+aws iam attach-group-policy --group-name MyGroupCli --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
+```
+Get the *ARN* via AWS UI or with ```aws iam list-policies --query 'Policies[?PolicyName==`AmazonEC2FullAccess`].Arn' --output text```.
+But in this case the name must be known.
+
+**User credentials to access the management console**
+
+*Set password for first login*
+
+```bash
+aws iam create-login-profile --user-name MyUserCli --password MyPassword! --password-reset-required
+```
+*Create policy*
+
+```json
+{
+  "Version": "2026-09-24",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:ChangePassword"
+      ],
+      "Resource": [
+        "arn:aws:iam::699289397297:user/${aws:username}"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetAccountPasswordPolicy"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+*Add policy*
+
+```bash
+aws iam create-policy --policy-name changePwd --policy-document file://changePwdPolicy.json
+```
+
+*Attach policy to group*
+
+```bash
+aws iam attach-group-policy --group-name MyGroupCli --policy-arn arn:aws:iam::699289397297:policy/changePwd
+```
+
+**Create access key for user**
+
+```bash
+aws iam create-access-key --user-name MyUserCli
+```
+
+**Change AWS user for executing commands**
+
+This will overwrite the configuration.
+
+```bash
+aws configure set aws_access_key_id <key ID>
+aws configure set aws_secret_access_key <access key>
+```
+
+For testing purposes the *access key ID* and the *secret access key*
+can be saved in environment variables (only in current terminal season available).
+
+```bash
+export AWS_ACCESS_KEY_ID=<key ID>
+export AWS_SECRET_ACCESS_KEY=<access key>
+```
+
+Also, a different *default region* can be saved in a environment variable.
+
+```bash
+export AWS_DEFAULT_REGION=<region>
+```
+
+**Delete AWS services**
+
+All services can be deleted via the *AWS CLI*.
+
+## Filters and Queries
+
+| Action | Flag      | Info                                    |
+|--------|-----------|-----------------------------------------|
+| Filter | --filters | Picks components                        |
+| Query  | --query   | Picks specific attributes of components |
