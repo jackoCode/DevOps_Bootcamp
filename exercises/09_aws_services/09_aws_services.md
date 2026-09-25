@@ -157,6 +157,8 @@ Default output format [json]: json
 
 ## Exercise 6
 
+Repository: https://gitlab.com/jackoCodes/aws-exercise/
+
 
 ## Exercise 7
 
