@@ -148,23 +148,265 @@ Default output format [json]: json
 
 ## Exercise 3
 
+*Create VPC*
+
+```bash
+aws ec2 create-vpc --cidr-block 10.0.0.0/24 --query Vpc.VpcId --output text
+```
+```
+vpc-034843c06897148b1
+```
+
+*Create subnet*
+
+```bash
+aws ec2 create-subnet --vpc-id vpc-034843c06897148b1 --cidr-block 10.0.0.0/24 --availability-zone eu-central-1a --query Subnet.SubnetId --output text
+```
+```
+subnet-04caf188718e0d77a
+```
+
+*Create internet gateway*
+
+```bash
+aws ec2 create-internet-gateway --query InternetGateway.InternetGatewayId --output text
+```
+```
+igw-059b50991677d84a4
+```
+
+*Attach internet gateway to VPC*
+
+```bash
+aws ec2 attach-internet-gateway --vpc-id vpc-034843c06897148b1 --internet-gateway-id igw-059b50991677d84a4
+```
+
+*Create route table for public subnet*
+
+```bash
+aws ec2 create-route-table --vpc-id vpc-034843c06897148b1 --query RouteTable.RouteTableId --output text
+```
+```
+rtb-0e7758b593584bf3e
+```
+
+*Add a route to send traffic to the internet gateway*
+
+```bash
+aws ec2 create-route --route-table-id rtb-0e7758b593584bf3e --destination-cidr-block 0.0.0.0/0 --gateway-id igw-059b50991677d84a4
+```
+```
+{
+    "Return": true
+}
+```
+
+*Associate route table with public subnet*
+
+```bash
+aws ec2 associate-route-table --route-table-id rtb-0e7758b593584bf3e --subnet-id subnet-04caf188718e0d77a
+```
+```
+{
+    "AssociationId": "rtbassoc-0d7356f40fe6e747a",
+    "AssociationState": {
+        "State": "associated"
+    }
+}
+```
+
+*Create security group*
+
+```bash
+aws ec2 create-security-group --group-name my-sg-exercise --description "My security group for exercise 09" --vpc-id vpc-034843c06897148b1
+```
+```
+{
+    "GroupId": "sg-0cfc4c761e7fe38c7",
+    "SecurityGroupArn": "arn:aws:ec2:eu-central-1:699289397297:security-group/sg-0cfc4c761e7fe38c7"
+}
+```
+
+*Find own public IP address*
+
+```bash
+curl https://checkip.amazonaws.com
+```
+```
+80.144.169.16
+```
+
+*Add SSH inbound rule for port 22*
+
+```bash
+aws ec2 authorize-security-group-ingress --group-id sg-0cfc4c761e7fe38c7 --protocol tcp --port 22 --cidr 0.0.0.0/0
+```
+```
+{
+    "Return": true,
+    "SecurityGroupRules": [
+        {
+            "SecurityGroupRuleId": "sgr-080fa69c83fb66a3a",
+            "GroupId": "sg-0cfc4c761e7fe38c7",
+            "GroupOwnerId": "699289397297",
+            "IsEgress": false,
+            "IpProtocol": "tcp",
+            "FromPort": 22,
+            "ToPort": 22,
+            "CidrIpv4": "0.0.0.0/0",
+            "SecurityGroupRuleArn": "arn:aws:ec2:eu-central-1:699289397297:security-group-rule/sgr-080fa69c83fb66a3a"
+        }
+    ]
+}
+```
+
+*Add inbound rule for port 3000 (Node.js)*
+
+```bash
+aws ec2 authorize-security-group-ingress --group-id sg-0cfc4c761e7fe38c7 --protocol tcp --port 3000 --cidr 0.0.0.0/0
+```
+```
+{
+    "Return": true,
+    "SecurityGroupRules": [
+        {
+            "SecurityGroupRuleId": "sgr-024dabb1f4fc3a294",
+            "GroupId": "sg-0cfc4c761e7fe38c7",
+            "GroupOwnerId": "699289397297",
+            "IsEgress": false,
+            "IpProtocol": "tcp",
+            "FromPort": 3000,
+            "ToPort": 3000,
+            "CidrIpv4": "0.0.0.0/0",
+            "SecurityGroupRuleArn": "arn:aws:ec2:eu-central-1:699289397297:security-group-rule/sgr-024dabb1f4fc3a294"
+        }
+    ]
+}
+```
+
+*Check security group rules*
+
+```bash
+aws ec2 describe-security-groups --group-ids sg-0cfc4c761e7fe38c7
+```
+```
+{
+    "SecurityGroups": [
+        {
+            "GroupId": "sg-0cfc4c761e7fe38c7",
+            "IpPermissionsEgress": [
+                {
+                    "IpProtocol": "-1",
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                }
+            ],
+            "VpcId": "vpc-034843c06897148b1",
+            "SecurityGroupArn": "arn:aws:ec2:eu-central-1:699289397297:security-group/sg-0cfc4c761e7fe38c7",
+            "OwnerId": "699289397297",
+            "GroupName": "my-sg-exercise",
+            "Description": "My security group for exercise 09",
+            "IpPermissions": [
+                {
+                    "IpProtocol": "tcp",
+                    "FromPort": 22,
+                    "ToPort": 22,
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                },
+                {
+                    "IpProtocol": "tcp",
+                    "FromPort": 3000,
+                    "ToPort": 3000,
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                }
+            ]
+        }
+    ]
+}
+
+```
 
 ## Exercise 4
 
+*Create EC2 instance*
+
+```bash
+aws ec2 run-instances 
+  --image-id ami-06121aa3085b6f918 
+  --count 1 
+  --instance-type t3.micro 
+  --key-name MyKpCli 
+  --security-group-ids sg-0cfc4c761e7fe38c7 
+  --subnet-id subnet-04caf188718e0d77a
+  --associate-public-ip-address
+```
+```
+"InstanceId": "i-01da92185c0fec243"
+```
+
+```bash
+aws ec2 describe-instances --instance-id i-01da92185c0fec243 --query "Reservations[*].Instances[*].{State:State.Name,Address:PublicIpAddress}"
+```
+```
+[
+    [
+        {
+            "State": "running",
+            "Address": "3.76.100.192"
+        }
+    ]
+]
+```
 
 ## Exercise 5
 
+*SSH into server*
 
-## Exercise 6
+```bash
+ssh -i ~/.ssh/<key-file-name>.pem ec2-user@3.76.100.192
+```
+
+*Install Docker*
+
+```bash
+sudo yum update
+sudo yum install docker
+sudo service docker start
+sudo usermod -aG docker $USER
+```
+
+## Exercise 6, 7, 9
 
 Repository: https://gitlab.com/jackoCodes/aws-exercise/
 
-
-## Exercise 7
-
-
 ## Exercise 8
 
+*Open port 3000*
 
-## Exercise 9
-
+```bash
+aws ec2 authorize-security-group-ingress 
+  --group-id sg-0cfc4c761e7fe38c7 
+  --protocol tcp 
+  --port 3000 
+  --cidr 0.0.0.0/0
+```
