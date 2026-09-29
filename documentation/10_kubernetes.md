@@ -76,3 +76,49 @@ are often hosted outside of Kubernetes clusters.
       - What resources are available?
       - Did the cluster state change?
       - Is the cluster healthy?
+
+## Minikube and Kubectl
+
+**Minikube**
+
+https://minikube.sigs.k8s.io/docs/start/
+
+**Kubectl**
+
+- Command line tool.
+- Talking to the *API Server*.
+- Not only for *Minikube*.
+
+*Install*
+
+```bash
+brew install minikube
+```
+
+*Start Minikube*
+
+```bash
+minikube start --driver docker
+```
+*Docker* is the preferred way to run *Minikube* on all operating systems.
+
+*Minikube status*
+
+```bash
+minikube status
+```
+```
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+```
+
+**Kubectl commands**
+
+| Command          | Info            |
+|------------------|-----------------|
+| kubectl get node | Shows all nodes |
+|                  |                 |
