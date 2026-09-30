@@ -118,7 +118,18 @@ kubeconfig: Configured
 
 **Kubectl commands**
 
-| Command          | Info            |
-|------------------|-----------------|
-| kubectl get node | Shows all nodes |
-|                  |                 |
+| Command                                                                | Info                                               |
+|------------------------------------------------------------------------|----------------------------------------------------|
+| ```kubectl get node```                                                 | Shows all available *Nodes*                        |
+| ```kubectl get pods```                                                 | Shows all availabel *Pods*                         |
+| ```kubectl get services```                                             | Shows all *Services*                               |
+| ```kubectl create deployment <deployment name> --image=<image name>``` | Create a new deployment with the given image       |
+| ```kubectl get deployments```                                          | Shows all *Deployments*                            |
+| ```kubectl get replicaset```                                           | Shows the *ReplicaSets*                            |
+| ```kubectl edit deployment <deployment name>```                        | Opens *Vim* for editing *Deployment* configuration |
+| ```kubectl logs <pod name>```                                          | Shows the logs for the *Pod*                       |
+| ```kubectl describe pod <pod name>```                                  | Shows the information of the *Pod*                 |
+| ```kubectl exec --it <pod name> -- bin/bash```                         | Opens a new terminal to interact with the *Pod*    |
+| ```kubectl apply -f <config-file name>.yaml```                         | Creates a *Deployment* from a config file          |
+| ```kubectl delete deployment <deployment name>```                      | Deletes the *Deployment*                           |
+
