@@ -133,3 +133,51 @@ kubeconfig: Configured
 | ```kubectl apply -f <config-file name>.yaml```                         | Creates a *Deployment* from a config file          |
 | ```kubectl delete deployment <deployment name>```                      | Deletes the *Deployment*                           |
 
+## YAML Configuration file
+
+The configuration file contains three parts.
+1. metadata
+2. specification
+3. status
+
+The *status* will be automatically be generated and added
+by Kubernetes.
+
+Example config files:
+- Deployment [nginx-deployment.yaml](../media/documents/10_kubernetes/nginx-deployment.yaml)
+- Service [nginx-service.yaml](../media/documents/10_kubernetes/nginx-service.yaml)
+
+**Create *Deployment* and *Service***
+
+*Deployment*
+
+```bash
+kubectl apply -f nginx-deployment.yaml
+```
+
+```bash
+% kubectl get pod     
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-7577994b67-5v5n4   1/1     Running   0          3m27s
+nginx-deployment-7577994b67-sb4kx   1/1     Running   0          3m27s
+```
+
+*Service*
+
+```bash
+kubectl apply -f nginx-service.yaml
+```
+
+```bash
+% kubectl get services                  
+NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+kubernetes      ClusterIP   10.96.0.1      <none>        443/TCP   47h
+nginx-service   ClusterIP   10.109.37.44   <none>        80/TCP    2m38s
+```
+
+**Delete *Deployment* and *Service***
+
+```bash
+kubectl delete -f nginx-deployment.yaml
+kubectl delete -f nginx-service.yaml
+```
