@@ -181,3 +181,67 @@ nginx-service   ClusterIP   10.109.37.44   <none>        80/TCP    2m38s
 kubectl delete -f nginx-deployment.yaml
 kubectl delete -f nginx-service.yaml
 ```
+
+## Demo project - Deploying Application in Kubernetes cluster
+
+**mongo.yaml**
+
+[mongo.yaml](../media/documents/10_kubernetes/demo_projects/deploying_app/mongo.yaml)
+
+*Deployment* and *Service* life in the same file. *Username* and *password*
+are defined in a *secrets* file and can be referenced via environmental
+variables (see documentation on Docker Hub: https://hub.docker.com/_/mongo).
+
+**mongo-secret.yaml**
+
+[mongo-secret.yaml](../media/documents/10_kubernetes/demo_projects/deploying_app/mongo-secret.yaml)
+
+*Username* and *password* are stored as *base64* values. To create both
+values use the following commands in the terminal (replace *username* and *password*
+with actual values).
+
+```bash
+echo -n 'username' | base64
+echo -n 'password' | base64
+```
+
+To reference username and password this configuration needs to be
+applied first.
+
+**mongo-express.yaml**
+
+[mongo-express.yaml](../media/documents/10_kubernetes/demo_projects/deploying_app/mongo-express.yaml)
+
+See documentation for *mongo-express* on GitHub: https://github.com/mongo-express/mongo-express
+
+Configuration for *mongo-express* is simular to *mongo* above.
+But additional environmental variables are needed.
+- DATABASE_URL     
+- ME_CONFIG_MONGODB_URL
+
+For the *service* an additional port for external connection (e.g., via browser)
+needs to be configured (in range between 30000 and 32767).
+
+**mongo-configmap.yaml**
+
+[mongo-configmap.yaml](../media/documents/10_kubernetes/demo_projects/deploying_app/mongo-configmap.yaml)
+
+As with the *mongo-secret.yaml* this file needs to be applied
+before *mongo-express.yaml*.
+
+**Get an IP address to connect to mongo-express**
+
+Because this Kubernetes cluster was deployed using *Minikube*
+the *mongo-express* service has no IP address.
+
+```
+% kubectl get service                        
+NAME                    TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+kubernetes              ClusterIP      10.96.0.1        <none>        443/TCP          4d21h
+mongo-express-service   LoadBalancer   10.101.148.199   <pending>     8081:30000/TCP   10s
+mongodb-service         ClusterIP      10.107.68.220    <none>        27017/TCP        19m
+```
+
+To connect to *mongo-express* run ```minikube service <mongo-express-service name>```.
+This will assign an IP address for the service and open the connection
+in the browser.
