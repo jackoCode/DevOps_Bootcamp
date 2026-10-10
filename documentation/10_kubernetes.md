@@ -324,3 +324,116 @@ kubectl api-resources --namespaced=true
   kubectl config set-current --current --namespace=<namespace name>
   ```
 - Using *kubectx* (https://github.com/ahmetb/kubectx).
+
+## Service
+
+- Stable IP address for Pods.
+- Load balancing.
+- Loose coupling.
+
+### ClusterIP Service
+
+- Default type.
+- ```kubectl get pod -o wide``` gives additional information of the Pods including the IP addresses.
+- Abstraction layer for IP addresses (e.g., Ingress calls the Service and the Service handles the request).
+
+*Which Pods to forward?*
+
+- "selector" attribute
+  - Pods are identified via selectors
+  - Key value pair
+  - Labels of Pods
+  - Random label names
+
+*Pod* has an attribute "labels"
+```yaml
+labels:
+  app: my-app
+  type: microservice
+```
+
+*Service* matches this label
+```yaml
+selector:
+  app: my-app
+  type: microservice
+```
+
+*Which port to forward request to?*
+
+- "targetPort" attribute
+  - Application port is listening at this port
+
+### Multi-Port Service
+
+- Handles requests to multiple ports.
+
+### Headless Service
+
+- Client wants to communicate with one specific Pod directly.
+- Pods want to talk directly with a specific Pod.
+- Not randomly selected.
+- *ClusterIP* and *Headless* Service are running in parallel.
+
+**Use case**: Stateful applications like databases.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service-headless
+spec:
+  clusterIP: None # for headless service clusterIP must be None
+  selector:
+    app: mongodb
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+```
+
+### NodePort Service
+
+- External traffic has access to fixed port on each *worker Node*.
+- Port must be in range between 30000 and 32767.
+
+**Node:** NodePort services are **not** secure! Not for external connection, only for testing.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-service-nodeport
+spec:
+  type: NodePort
+  selector:
+    app: microservice-one
+  ports:
+    - protocol: TCP
+      port: 3200
+      targetPort: 3000
+      nodePort: 30008
+```
+
+### LoadBalancer Service
+
+- Access externally through cloud providers load balancer.
+- *NodePort* and *ClusterIP* service are created automatically.
+
+*LoadBalancer* is an extension of *NodePort* is an extension of *ClusterIP*.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-service-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: microservice-one
+  ports:
+    - protocol: TCP
+      port: 3200
+      targetPort: 3000
+      nodePort: 30010
+```
