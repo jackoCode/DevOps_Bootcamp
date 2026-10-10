@@ -245,3 +245,82 @@ mongodb-service         ClusterIP      10.107.68.220    <none>        27017/TCP 
 To connect to *mongo-express* run ```minikube service <mongo-express-service name>```.
 This will assign an IP address for the service and open the connection
 in the browser.
+
+## Namespaces
+
+*Namespace* is a virtual cluster inside a cluster.
+
+**Default Namespaces**
+
+```kubectl get namespace```
+
+| Namespace       | Info                                                                               |
+|-----------------|------------------------------------------------------------------------------------|
+| kube-system     | System processes. Do **not** create or modify.                                     |
+| kube-public     | Publicly accessable data. It is a *ConfigMap*, which contains cluster information. |
+| kube-node-lease | Heardbeats of *Nodes*. Each Node has associated lease object.                      |
+| default         | Resources, which are created are located here.                                     |
+
+**Create a Namespace**
+
+1. Command line ```kubectl create namespace <namespace name>```
+2. Config file
+   e.g., 
+   ```yaml
+   apiVersion: v1
+   kind: Namespace
+   metadata:
+      name: <namespace name>
+   ```
+   
+**Usage**
+
+- Group resources in a Namespace (e.g., Database, Monitoring, Elastic Stack, Nginx-Ingress).
+- Many teams, same application.
+- Resource sharing
+  - Staging and deployment
+  - Blue/green deployment
+- Access and resource limits on Namespaces
+
+**Characteristics**
+
+- Can not access most resources from another Namespace (*ConfigMag* for each Namespace is needed).
+- Access *Service* in another Namespace.
+- Components that can not be created within a Namespace.
+  - Live globally in a cluster.
+  - Can not isolate them.
+
+**Create a component in a Namespace**
+
+- Command line ```kubectl apply -f <configmap>.yaml --namespace=<namespace name>```
+- Config file
+  e.g.,
+  ```yaml
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: mongodb-configmap
+    namespace: my-namespace
+  data:
+    database_url: mongodb-service.database
+  ```
+
+*Get Namespace information*
+
+Not bound to a Namespace.
+```bash
+kubectl api-resources --namespaced=false
+```
+
+Bound to a Namespace.
+```bash
+kubectl api-resources --namespaced=true
+```
+
+**Change the active Namespace**
+
+- Command line
+  ```bash
+  kubectl config set-current --current --namespace=<namespace name>
+  ```
+- Using *kubectx* (https://github.com/ahmetb/kubectx).
