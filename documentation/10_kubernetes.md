@@ -437,3 +437,185 @@ spec:
       targetPort: 3000
       nodePort: 30010
 ```
+
+## Ingress
+
+**Example**
+
+*Ingress*
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: myapp.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: myapp-internal-service
+                port:
+                  number: 8080
+```
+
+*Internal service*
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-internal-service
+spec:
+  selector:
+    app: myapp
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+```
+
+### Ingress Controller
+
+https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+
+- Evaluates all the rules.
+- Manages redirections.
+- Entrypoint to cluster.
+- Many third-party implementations (e.g., nginx https://docs.nginx.com/nginx-ingress-controller/install/helm/open-source).
+
+**Install *Ingress Controller* in Minikube**
+
+```helm install nginx-ingress oci://ghcr.io/nginx/charts/nginx-ingress```
+
+Run nginx dashboard: ```minikube dashboard```
+
+**Create Ingress rule**
+
+[dashboard-ingress.yaml](../media/documents/10_kubernetes/demo_projects/ingress/dashboard-ingress.yaml)
+
+```kubectl apply -f dashboard-ingress.yaml```
+
+Get information 
+
+```kubectl get ingress -n kubernetes-dashboard```
+```
+NAME                CLASS   HOSTS           ADDRESS   PORTS   AGE
+dashboard-ingress   nginx   dashboard.com             80      43s
+```
+
+To connect to *dashboard.com* on the local machine, the */etc/hosts* file needs to be updated.
+
+1. ```sudo vim /etc/hosts```
+2. Insert *127.0.0.1 &emsp; dashboard.com*
+3. Run dashboard with ```minikube tunnel```
+4. Access dashboard in browser with *dashboard.com*
+
+### More use cases
+
+**Multiple paths for same host.**
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simple-fanout-example
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: myapp.com
+      http:
+        paths:
+          - path: /analytics
+            backend:
+              service:
+                name: analytics-service
+                port:
+                  number: 3000
+          - path: /shopping
+            backend:
+              service:
+                name: shopping-service
+                port:
+                  number: 8080
+```
+
+**Multiple sub-domains or domains.**
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: name-virtual-host-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: analytics.myapp.com
+      http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: analytics-service
+                port:
+                  number: 3000
+    - host: shopping.myapp.com
+      http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: shopping-service
+                port:
+                  number: 8080
+```
+
+### Configure *TLS* certificate (https://)
+
+*Ingress*
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tls-example-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - myapp.com
+    secretName: myapp-secret-tls
+  rules:
+    - host: myapp.com
+      http:
+        paths:
+          - path: /analytics
+            backend:
+              service:
+                name: myapp-internal-service
+                port:
+                  number: 8080
+```
+
+*Secret*
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: myapp-secret-tls
+  namespace: default
+data:
+  tls.crt: <base64 encoded cert>
+  tls.key: <base64 encoded key>
+type: kubernetes.io/tls
+```
+
+1. Data key need to be *tls.crt* and *tls.key*.
+2. Values are file contents **NOT** file paths/locations.
+3. Secret component must be in the *same namespace* as the Ingress component.
