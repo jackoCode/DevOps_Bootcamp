@@ -619,3 +619,54 @@ type: kubernetes.io/tls
 1. Data key need to be *tls.crt* and *tls.key*.
 2. Values are file contents **NOT** file paths/locations.
 3. Secret component must be in the *same namespace* as the Ingress component.
+
+## Gateway API
+
+https://kubernetes.io/docs/concepts/services-networking/gateway/
+
+**Benefits**
+1. Configuration decoupled.
+2. Native traffic control.
+3. One entry point for all traffic types.
+
+*Note*: Ingress is still valid for
+- few services,
+- single teams and
+- standard HTTP.
+
+## Persisting data with *Volumes*
+
+### Persistent Volume
+
+- Cluster resource.
+- Created via YAML file.
+  - kind: PersistentVolume
+  - spec: e.g., how much storage?
+- Needs actual physical storage.
+  - You need to *create* and *manage* them by yourself.
+- **NOT** namespaced.
+
+### Persistent Volume Claim
+
+- Pod requests the volume through the *PVC*.
+- Claim tries to find a volume in the cluster.
+- Volume has the actual storage backend.
+- *Claim* must be in the same namespace as the Pod (because
+  Persistent Volume is not namespaced).
+
+### Storage Class
+
+- Provisions Persistent Volumes *dynamically* when Persistent Volume Claim claims it.
+- Created via YAML file.
+  - kind: StorageClass
+  - Attribute *provisioner*.
+    - Each storage backend has own *provisioner*.
+    - Internal provisioner starts with *kubernetes.io*.
+    - External provisioner available.
+  - Configure parameters for storage we want to request for PV (e.g., *fsType: ext4*).
+
+**Process**
+
+1. *Pod* claims storage via *Persistent Volume Claim*.
+2. *Persistent Volume Claim* requests storage from *Storage Class*.
+3. *Storage Class* creates *Persistent Volume* that meets the needs of the claim.
