@@ -714,3 +714,32 @@ mosquitto.conf
 config  data    log     secret
 ```
 
+## StatefulSet
+
+Used for stateful application (e.g., databases).
+
+- State**less** applications are deployed using *Deployment*
+- State**ful** applications are deployed using *StatefulSet*
+
+**Pod identity**
+
+- Unique ID.
+- Replica will be created only main is already running.
+
+**Replicating stateful applications**
+
+- It is complex.
+- Kubernetes helps.
+- Still need to do
+  - configure cloning and data synchronization,
+  - make remote storage available, and
+  - manage and backup.
+- Stateful applications **not** perfect for containerized environments.
+
+## Managed Kubernetes Services
+
+- Only care about *worker nodes*.
+- Everything pre-installed.
+- *Control plane nodes* created and managed by cloud provider.
+- Only pay for worker nodes.
+- Less effort and time.
