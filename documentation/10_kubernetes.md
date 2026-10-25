@@ -670,3 +670,47 @@ https://kubernetes.io/docs/concepts/services-networking/gateway/
 1. *Pod* claims storage via *Persistent Volume Claim*.
 2. *Persistent Volume Claim* requests storage from *Storage Class*.
 3. *Storage Class* creates *Persistent Volume* that meets the needs of the claim.
+
+## ConfigMap & Secret
+
+Demo files: [configset_secret](../media/documents/10_kubernetes/demo_projects/configset_secret)
+
+*ConfigMap* and *Secret* must be created and exist before Pod
+starts in the Kubernetes cluster.
+
+```
+kubectl apply -f config-file.yaml
+kubectl apply -f secret-file.yaml
+```
+
+```
+kubectl get configmap
+
+NAME                            DATA   AGE
+mosquitto-config-file           1      53s
+```
+
+```
+kubectl get secret
+
+NAME                                  TYPE                 DATA   AGE
+mosquitto-secret-file                 Opaque               1      13s
+```
+
+```
+kubectl apply -f mosquitto.yaml
+```
+
+```
+kubectl exec -it mosquitto-765cbd6d8f-m9d74 -- /bin/sh 
+
+# cd mosquitto/
+/mosquitto # cd config
+/mosquitto/config # ls
+mosquitto.conf
+
+/mosquitto/config # cd ..
+/mosquitto # ls
+config  data    log     secret
+```
+
