@@ -772,4 +772,19 @@ mychart             Top level folder -> name of chart.
 
 **Release Management**
 
+### Helm Demo
 
+- The installation documentation for helm can be found here: https://helm.sh/docs/intro/install/
+- The Bitnami helm chart repository information commands can be found here: https://github.com/bitnami/charts/tree/main/bitnami/mongodb
+
+*Values file*
+
+[helm-mongodb.yaml](../media/documents/10_kubernetes/helm_demo/helm-mongodb.yaml)
+
+*Deployment*
+
+[helm-mongo-express.yaml](../media/documents/10_kubernetes/helm_demo/helm-mongo-express.yaml)
+
+*Ingress*
+
+[helm-ingress.yaml](../media/documents/10_kubernetes/helm_demo/helm-ingress.yaml)
