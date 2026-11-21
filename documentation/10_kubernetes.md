@@ -788,3 +788,74 @@ mychart             Top level folder -> name of chart.
 *Ingress*
 
 [helm-ingress.yaml](../media/documents/10_kubernetes/helm_demo/helm-ingress.yaml)
+
+## Deploying Images in Kubernetes from private Docker repository
+
+**Steps to pull image form private registry**
+
+1. Create *Secret* component with credentials for Docker registry.
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-registry-key
+data:
+  .dockerconfigjson:<base64 encoded token>
+type: kubernetes.io/dockerconfigjson
+```
+
+2. Configure *Deployment/Pod*. Use *Secret* using **imagePullSecrets**.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <app name>
+  labels:
+    app: <app name>
+spec:
+  replicas:
+  selector:
+    matchLabels:
+      app: <app name>
+  template:
+    metadata:
+      labels:
+        app: <app name>
+    spec:
+      imagePullSecret:
+        - name: <registry-key name>
+      containers:
+        - name: <app name>
+          image: <image name>
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+```
+
+*Create docker login secret from config.json file*
+```
+kubectl create secret generic <registry-key name> --from-file=.dockerconfigjson=.docker/config.json --type=kubernetes.io/dockerconfigjson
+```
+This can be used if multiple registries are in use, because
+config.json file can contain registry keys for more then one
+private Docker registry.
+
+*Create Docker login secret with login credentials*
+```
+kubectl create secret docker-registry <registry-key name> --docker-server=<server URL> --docker-username=<username> --docker-password=<password>
+```
+This can only be used for one registry.
+
+**Useful CLI commands**
+
+| Command                                                                                           | Info                                               |
+|---------------------------------------------------------------------------------------------------|----------------------------------------------------|
+| ```aws ecr get-login-password```                                                                  | Print full Docker login command for AWS ECR.       |
+| ```docker login -u <username> -p <password>```                                                    | Login to Docker private repository.                |
+| ```cat .docker/config.json \| base64```                                                           | Base64 encode config file.                         |
+| ```kubectl get secret```                                                                          | Access generated secret.                           |
+| ```minikube ssh```                                                                                | Access minikube console.                           |
+| ```minikube cp minikube:/home/docker/.docker/config.json /users/<username>/.docker/config.json``` | Copy config.json file from Minikube to local host. |
+
