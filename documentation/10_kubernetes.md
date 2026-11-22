@@ -859,3 +859,22 @@ This can only be used for one registry.
 | ```minikube ssh```                                                                                | Access minikube console.                           |
 | ```minikube cp minikube:/home/docker/.docker/config.json /users/<username>/.docker/config.json``` | Copy config.json file from Minikube to local host. |
 
+## Operator
+
+*Stateless*
+
+No control necessary after the application is deployed.
+
+*Stateful*
+
+- Data persistence.
+- Manual intervention necessary.
+
+**Operator** replaces human operator with software operator.
+- Control loop mechanism.
+- Makes use of CRDs (Custom Resource Definition).
+- Domain/app-specific knowledge.
+
+There are *Operators* available for common used applications (e.g., https://operatorhub.io). 
+Own *Operators* can be created with the **Operator SDK** (https://sdk.operatorframework.io).
+
