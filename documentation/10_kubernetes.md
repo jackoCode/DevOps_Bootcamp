@@ -878,3 +878,104 @@ No control necessary after the application is deployed.
 There are *Operators* available for common used applications (e.g., https://operatorhub.io). 
 Own *Operators* can be created with the **Operator SDK** (https://sdk.operatorframework.io).
 
+## Authorization with *Role Based Access Control* (RBAC)
+
+### Users
+**Role**
+
+- Defines namespace permissions.
+- Bound to a specific namespace.
+- What resources in that namespace can be accessed.
+- What actions can be performed with these resources.
+- Defines resources and access permissions, but no information on who gets these permissions.
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: my-app
+  name: developer
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "create", "list"]
+  - apiGroups: [""]
+    resources: ["secret"]
+    verbs: ["get"]
+```
+
+|           | Info                                                |
+|-----------|-----------------------------------------------------|
+| namespace | Optional. Define a Role for a specific application. |
+| apiGroups | "" indicates the core API group.                    |
+| resources | K8s components like Pods, Developments etc.         |
+| verbs     | The action on a resource.                           |
+
+
+**RoleBinding**
+
+- Link ("bind") a Role to a user or group.
+- All members of the group get permissions defined in the Role.
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jane-developer-binding
+subjects:
+  - kind: User
+    name: jane
+    apiGroups: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: developer
+  apiGroups: rbac.authorization.k8s.io
+```
+
+### Admins
+**ClusterRole**
+
+- Defines resources and permissions cluster wide.
+- Attach *ClusterRole* using *ClusterRoleBinding*.
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-admin
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "create", "list", "delete", "update"]
+```
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: read-secret-global
+subjects:
+  - kind: Group
+    name: cluster-admins
+    apiGroups: rbac.authorization.k8s.io
+roleRef:
+  - kind: ClusterRole
+    name: cluster-admin
+    apiGroups: rbac.authorization.k8s.io
+```
+
+### External sources for authentication
+
+Kubernetes does not manage users natively.
+
+User authentication:
+- Static token file
+- Certificates
+- 3rd party identity service
+
+### Service accounts
+
+- Applications are inside or outside the cluster.
+- Link *ServiceAccount* to *Role* with *RoleBinding*.
+- Link *ServiceAccount* to *ClusterRole* with *ClusterRoleBinding*.
+
