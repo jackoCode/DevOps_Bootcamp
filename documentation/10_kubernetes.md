@@ -979,3 +979,21 @@ User authentication:
 - Link *ServiceAccount* to *Role* with *RoleBinding*.
 - Link *ServiceAccount* to *ClusterRole* with *ClusterRoleBinding*.
 
+## Microservices in Kubernetes
+
+**Information needed form developers**
+- What microservice to deploy?
+- Which microservice is talking to which microservice?
+- How are they communicating?
+  - API call.
+  - Message broker.
+  - Service mesh.
+- Which database are they using?
+- 3rd party services.
+- On which port does each microservice run?
+
+**Prepare Kubernetes environment**
+- Deploy any 3rd party applications.
+- Create *Secrets* and *ConfigMaps* for microservices.
+- Create *Deployment* and *Service* for each microservice.
+
