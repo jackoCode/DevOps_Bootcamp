@@ -997,3 +997,17 @@ User authentication:
 - Create *Secrets* and *ConfigMaps* for microservices.
 - Create *Deployment* and *Service* for each microservice.
 
+## Demo - Deploy microservice application
+
+**Key information we need to know**
+- What *microservice* are we deploying?
+- How are they *connected*?
+- Any *3rd party* services or databases?
+- Which service is *accessible from outside* the cluster?
+- What *environment variables* each microservice expects?
+- On which *port* each microservice starts.
+
+**Demo project**
+- https://gitlab.com/jackoCodes/kubernetes-ms-demo#
+- https://gitlab.com/users/jackoCodes/projects
+
